@@ -15,5 +15,7 @@ class VideoBioFile(BioFile):
         """
         super(VideoBioFile, self).__init__(client_id=client_id, path=path, file_id=file_id)
 
-    def load(self, directory=None, extension='.avi', frame_selector = FrameSelector()):
+    def load(self, directory=None, extension='.avi', frame_selector=None):
+        if frame_selector is None:
+            frame_selector = FrameSelector()
         return frame_selector(self.make_path(directory, extension))
