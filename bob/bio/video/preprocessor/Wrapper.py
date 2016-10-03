@@ -56,12 +56,8 @@ class Wrapper(bob.bio.base.preprocessor.Preprocessor):
                  read_original_data=None
                  ):
 
-        def _read_video_data(biofile, directory, extension):
-          """Read video data using the frame_selector of this object"""
-          return biofile.load(directory, extension, frame_selector)
-
         if read_original_data is None:
-          read_original_data = _read_video_data
+          read_original_data = bob.bio.base.utils.read_original_data
 
         # load preprocessor configuration
         if isinstance(preprocessor, str):
