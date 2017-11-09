@@ -25,20 +25,29 @@ from bob.bio.base.test.utils import db_available
 from bob.bio.base.test.test_database_implementations import check_database_zt
 from bob.bio.face.test.test_databases import _check_annotations
 import pkg_resources
-from ..database.youtube import YoutubeBioFile
-import os
 
 
 @db_available('youtube')
 def test_youtube():
-    database = bob.bio.base.load_resource('youtube', 'database', preferred_package='bob.bio.video')
+    database = bob.bio.base.load_resource(
+        'youtube', 'database', preferred_package='bob.bio.video')
+
+    # test the load method:
+    youtube_bio_file = database.all_files()[0]
+    directory = pkg_resources.resource_filename('bob.bio.video', 'test/data')
+    frame_container = youtube_bio_file.load(
+        directory=directory, extension=".jpg")
+    assert (len(frame_container) == 2)
+
+    # normal tests
     try:
         check_database_zt(database, training_depends=True, models_depend=True)
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
     try:
-        _check_annotations(database, limit_files=1000, topleft=True, framed=True)
+        _check_annotations(database, limit_files=1000,
+                           topleft=True, framed=True)
     except IOError as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
@@ -46,31 +55,10 @@ def test_youtube():
 
 @db_available('mobio')
 def test_mobio():
-    database = bob.bio.base.load_resource('mobio', 'database', preferred_package='bob.bio.video')
+    database = bob.bio.base.load_resource(
+        'mobio', 'database', preferred_package='bob.bio.video')
     try:
         check_database_zt(database, models_depend=True)
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
-
-
-def test_youtube_load_method():
-    """
-    Test the load method of the YoutubeBioFile class.
-    """
-
-    database = bob.bio.base.load_resource('youtube', 'database', preferred_package='bob.bio.video')
-
-    f = database.all_files()[0]
-
-    youtube_bio_file = YoutubeBioFile(f)
-
-    test_file = pkg_resources.resource_filename('bob.bio.video', 'test/data/Aaron_Eckhart/0/image_1.jpg')
-
-    directory = os.path.split(test_file)[0]
-
-    directory = os.path.join(directory, os.pardir, os.pardir)
-
-    frame_container = youtube_bio_file.load(directory=directory, extension=".jpg")
-
-    assert (len(frame_container)==2)
