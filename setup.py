@@ -73,6 +73,14 @@ setup(
         'youtube             = bob.bio.video.config.database.youtube:database',
       ],
 
+      'bob.bio.config': [
+        'preprocessor-wrapper = bob.bio.video.config.chain_loading.preprocessor',
+        'extractor-wrapper = bob.bio.video.config.chain_loading.extractor',
+        'algorithm-wrapper = bob.bio.video.config.chain_loading.algorithm',
+        'annotator-wrapper = bob.bio.video.config.chain_loading.annotator',
+        'video-wrapper = bob.bio.video.config.chain_loading.video',
+      ]
+
     },
 
     # Classifiers are important if you plan to distribute this package through

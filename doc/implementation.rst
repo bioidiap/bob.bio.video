@@ -75,3 +75,19 @@ Here is the list of files and replacement strings for all databases that are reg
 
 
 You can use the ``databases.py`` script to list, which data directories are correctly set up.
+
+
+.. _bob.bio.video.baselines:
+
+Executing Face Baselines using Video databases
+----------------------------------------------
+
+There may exist many face recognition baselines (:ref:`bob.bio.face.baselines`)
+designed for still images that you may want to try on video databases. An easy
+way to do that is to use our ``video-wrapper`` (It's a ``bob.bio.config``
+entrypoint). What this does is to take the preprocessor, extractor, and
+algorithm from the baseline and wrap it in bob.bio.video classes:
+
+.. code-block:: sh
+
+    $ bob bio baseline <face-baseline> <video-database> video-wrapper
