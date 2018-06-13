@@ -51,11 +51,10 @@ class FailSafeVideo(Base):
   def annotate(self, frames, **kwargs):
     """See :any:`Base.annotate`
     """
-    frame_ids, frames = self.frame_ids_and_frames(frames)
     annotations = collections.OrderedDict()
     current = None
     age = 0
-    for i, frame in zip(frame_ids, frames):
+    for i, frame in self.frame_ids_and_frames(frames):
       for annotator in self.annotators:
         annot = annotator.annotate(frame, **kwargs)
         if annot and self.validator(annot):

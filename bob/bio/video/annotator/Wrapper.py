@@ -52,9 +52,8 @@ class Wrapper(Base):
   def annotate(self, frames, **kwargs):
     """See :any:`Base.annotate`
     """
-    frame_ids, frames = self.frame_ids_and_frames(frames)
     annotations = collections.OrderedDict()
-    for i, frame in zip(frame_ids, frames):
+    for i, frame in self.frame_ids_and_frames(frames):
       annotations[i] = self.annotator(frame, **kwargs)
     if self.normalize:
       annotations = collections.OrderedDict(normalize_annotations(
