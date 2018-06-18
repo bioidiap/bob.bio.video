@@ -21,6 +21,8 @@ class Base(bob.bio.base.annotator.Annotator):
 
     def _read_video_data(biofile, directory, extension):
       """Read video data using the frame_selector of this object"""
+      if hasattr(biofile, 'frames'):
+        return biofile.frames
       return biofile.load(directory, extension, frame_selector)
 
     if read_original_data is None:
@@ -30,28 +32,26 @@ class Base(bob.bio.base.annotator.Annotator):
 
   @staticmethod
   def frame_ids_and_frames(frames):
-    """Normalizes the frames parameter into a numpy array and a list of
-    indices.
+    """Takes the frames and yields frame_ids and frames.
 
     Parameters
     ----------
-    frames : :any:`bob.bio.video.FrameContainer` or :any:`numpy.array`
+    frames : :any:`bob.bio.video.FrameContainer` or an iterable of arrays
         The frames of the video file.
 
-    Returns
-    -------
-    frame_ids : list
-        A list of strings that represent the frame ids.
-    frames : :any:`numpy.array`
-        The frames of the video file as a numpy array.
+    Yields
+    ------
+    frame_id : str
+        A string that represents the frame id.
+    frame : :any:`numpy.array`
+        The frame of the video file as an array.
     """
     if isinstance(frames, utils.FrameContainer):
-      frame_ids = [fid for fid, _, _ in frames]
-      frames = frames.as_array()
-    else:  # frames is already a numpy.array
-      frame_ids = [str(i) for i in range(len(frames))]
-
-    return frame_ids, frames
+      for fid, fr, _ in frames:
+        yield fid, fr
+    else:
+      for fid, fr in enumerate(frames):
+        yield str(fid), fr
 
   def annotate(self, frames, **kwargs):
     """Annotates videos.
