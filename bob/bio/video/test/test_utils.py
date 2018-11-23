@@ -19,9 +19,9 @@ def test_frame_container():
 
   try:
     # create random test data
-    test_data = [numpy.random.randn(20,20) for i in range(5)]
+    test_data = [numpy.random.randn(20,20) for i in range(15)]
     frames = bob.bio.video.FrameContainer()
-    for i in range(5):
+    for i in range(15):
       frames.add(i, test_data[i], i/5.)
 
     # write to file
@@ -29,14 +29,14 @@ def test_frame_container():
     # read from file using the dummy class
     read = bob.bio.video.FrameContainer(bob.io.base.HDF5File(filename, 'r'))
 
-    assert len(read) == 5
+    assert len(read) == 15
 
-    # assert that the data hasn't changed
-    for index, data, quality in read:
+    # assert that the data hasn't changed and also order is kept
+    for i, (index, data, quality) in enumerate(read):
       index = int(index)
-      assert index in range(5)
+      assert index == i
       assert abs(quality - index/5.) < 1e-8
-      assert numpy.allclose(test_data[index], data)
+      assert numpy.allclose(test_data[i], data)
 
     # test as_array method
     assert numpy.allclose(read.as_array(), test_data)
