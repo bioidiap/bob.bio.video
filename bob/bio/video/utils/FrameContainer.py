@@ -35,8 +35,16 @@ class FrameContainer:
 
   def load(self, hdf5, load_function = bob.bio.base.load):
     self._frames = []
+    if hdf5.has_group("FrameIndexes"):
+      hdf5.cd("FrameIndexes")
+      indices = sorted(int(i) for i in hdf5.keys(relative=True))
+      frame_ids = [hdf5[str(i)] for i in indices]
+      hdf5.cd("..")
+    else:
+      frame_ids = hdf5.sub_groups(relative=True, recursive=False)
+
     # Read content (frames) from HDF5File
-    for path in hdf5.sub_groups(relative=True, recursive=False):
+    for path in frame_ids:
       # extract frame_id
       if path[:6] == 'Frame_':
         frame_id = str(path[6:])
@@ -56,13 +64,21 @@ class FrameContainer:
     The contained data will be written using the given save_function."""
     if not len(self):
       logger.warn("Saving empty FrameContainer '%s'", hdf5.filename)
+    frame_ids = []
     for frame_id, data, quality in self:
       hdf5.create_group("Frame_%s" % frame_id)
       hdf5.cd("Frame_%s" % frame_id)
+      frame_ids.append("Frame_%s" % frame_id)
       save_function(data, hdf5)
       if quality is not None:
         hdf5.set("FrameQuality", quality)
       hdf5.cd("..")
+    # save the order of frames too so we can load them correctly later
+    hdf5.create_group("FrameIndexes")
+    hdf5.cd("FrameIndexes")
+    for i, v in enumerate(frame_ids):
+      hdf5[str(i)] = v
+    hdf5.cd("..")
 
   def is_similar_to(self, other):
     if len(self) != len(other): return False
