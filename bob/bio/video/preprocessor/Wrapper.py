@@ -4,8 +4,11 @@
 import bob.bio.base
 import bob.io.base
 import six
+import logging
 
 from .. import utils
+
+logger = logging.getLogger("bob.bio.video")
 
 
 class Wrapper(bob.bio.base.preprocessor.Preprocessor):
@@ -116,7 +119,6 @@ class Wrapper(bob.bio.base.preprocessor.Preprocessor):
         preprocessed : :py:class:`bob.bio.video.FrameContainer`
           A frame container that contains the preprocessed frames.
         """
-
         fc = utils.FrameContainer()
 
         for index, frame, _ in frames:
@@ -136,6 +138,8 @@ class Wrapper(bob.bio.base.preprocessor.Preprocessor):
                     quality = None
                 # add image to frame container
                 fc.add(index, preprocessed, quality)
+            else:
+              logger.warning('Processing of frame %s failed.', index)
 
         if not len(fc):
           return None
