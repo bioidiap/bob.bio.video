@@ -1,6 +1,7 @@
 from .database import VideoBioFile
 from .mobio import MobioBioDatabase
 from .youtube import YoutubeBioDatabase
+from .replaymobile import ReplayMobileVideoBioDatabase
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -15,12 +16,14 @@ def __appropriate__(*args):
     <https://github.com/sphinx-doc/sphinx/issues/3048>`
     """
 
-    for obj in args: obj.__module__ = __name__
+    for obj in args:
+        obj.__module__ = __name__
 
 
 __appropriate__(
     VideoBioFile,
     MobioBioDatabase,
     YoutubeBioDatabase,
-    )
+    ReplayMobileVideoBioDatabase,
+)
 __all__ = [_ for _ in dir() if not _.startswith('_')]

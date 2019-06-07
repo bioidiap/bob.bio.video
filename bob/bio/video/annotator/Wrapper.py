@@ -2,7 +2,10 @@ import six
 import collections
 import bob.bio.base
 import bob.bio.face
+import logging
 from . import Base, normalize_annotations
+
+logger = logging.getLogger(__name__)
 
 
 class Wrapper(Base):
@@ -54,6 +57,7 @@ class Wrapper(Base):
     """
     annotations = collections.OrderedDict()
     for i, frame in self.frame_ids_and_frames(frames):
+      logger.debug("Annotating frame %s", i)
       annotations[i] = self.annotator(frame, **kwargs)
     if self.normalize:
       annotations = collections.OrderedDict(normalize_annotations(
