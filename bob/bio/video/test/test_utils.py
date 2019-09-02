@@ -41,6 +41,12 @@ def test_frame_container():
     # test as_array method
     assert numpy.allclose(read.as_array(), test_data)
 
+    # check loading only a part of the hdf5
+    with bob.io.base.HDF5File(filename) as f:
+      # load only a subset of the FrameContainer
+      fc = bob.bio.video.FrameContainer().load(f, selection_style="spread", max_number_of_frames=10)
+    assert len(fc) == 10, len(fc)
+
   finally:
     if os.path.exists(filename):
       os.remove(filename)
@@ -113,3 +119,9 @@ def test_frame_selector():
   assert frames[1][0] == '6'
   assert numpy.allclose(frames[1][1], video_data[6])
   assert frames[1][2] is None
+
+  # test bob.io.video.reader support
+  path = bob.io.base.test_utils.datafile("testvideo.avi", __name__)
+  fs = bob.bio.video.FrameSelector(selection_style="spread", max_number_of_frames=20)
+  fc = fs(bob.io.video.reader(path))  # only loads 20 frames into memory
+  assert len(fc) == 20, len(fc)
