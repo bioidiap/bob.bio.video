@@ -30,6 +30,7 @@ class FrameSelector:
   def __init__(self,
       max_number_of_frames = 20,
       selection_style = "spread",
+      neighbors=1,
       step_size = 10
   ):
     if selection_style not in ('first', 'spread', 'step', 'all'):
@@ -37,6 +38,9 @@ class FrameSelector:
     self.selection = selection_style
     self.max_frames = max_number_of_frames
     self.step = step_size
+    self.neighbors = neighbors
+    if selection_style == 'step' and neighbors >= (step_size-2):
+      self.neighbors = 1
 
   def __call__(self, data, load_function = bob.io.base.load):
     """Selects frames and returns them in a FrameContainer.
@@ -56,14 +60,21 @@ class FrameSelector:
 
     # first, get the indices
     count = len(data)
+    indices = None
     if self.selection == 'first':
       # get the first frames (limited by all frames)
       indices = range(0, min(count, self.max_frames))
     elif self.selection == 'spread':
       # get frames lineraly spread over all frames
-      indices = bob.bio.base.selected_indices(count, self.max_frames)
+      indices = bob.bio.base.selected_indices(count-self.neighbors+1, self.max_frames)
+      for j in range(self.neighbors-1):
+        indices += [i+1 for i in indices]
+      indices = sorted(indices)
     elif self.selection == 'step':
-      indices = range(self.step//2, count, self.step)[:self.max_frames]
+      indices = range(self.step//2, count-self.neighbors+1, self.step)[:self.max_frames]
+      for j in range(self.neighbors-1):
+        indices += [i+1 for i in indices]
+      indices = sorted(indices)
     elif self.selection == 'all':
       indices = range(0, count)
 
@@ -85,6 +96,10 @@ class FrameSelector:
         image = load_function(data[i])
         # save image name as well
         fc.add(os.path.basename(data[i]), image)
+    else:
+      for i, frame in enumerate(data):
+        if i in indices:
+          fc.add(i, frame)
 
     return fc
 
