@@ -42,6 +42,13 @@ class FrameSelector:
     if selection_style == 'step' and neighbors >= (step_size-2):
       self.neighbors = 1
 
+  def _add_indices_neighbors(self, indices):
+    indices_extended = list()
+    for j in range(self.neighbors):
+      indices_extended += [i + j for i in indices]
+    indices_extended = sorted(list(set(indices_extended)))
+    return indices_extended
+
   def __call__(self, data, load_function = bob.io.base.load):
     """Selects frames and returns them in a FrameContainer.
     Different ``data`` parameters are accepted:
@@ -67,14 +74,12 @@ class FrameSelector:
     elif self.selection == 'spread':
       # get frames lineraly spread over all frames
       indices = bob.bio.base.selected_indices(count-self.neighbors+1, self.max_frames)
-      for j in range(self.neighbors-1):
-        indices += [i+1 for i in indices]
-      indices = sorted(indices)
+      if self.neighbors > 1:
+        indices = self._add_indices_neighbors(indices)
     elif self.selection == 'step':
       indices = range(self.step//2, count-self.neighbors+1, self.step)[:self.max_frames]
-      for j in range(self.neighbors-1):
-        indices += [i+1 for i in indices]
-      indices = sorted(indices)
+      if self.neighbors > 1:
+        indices = self._add_indices_neighbors(indices)
     elif self.selection == 'all':
       indices = range(0, count)
 
