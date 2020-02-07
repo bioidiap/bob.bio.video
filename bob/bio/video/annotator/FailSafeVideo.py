@@ -28,7 +28,7 @@ class FailSafeVideo(Base):
       The maximum number of frames that an annotation is valid for next frames.
       This value should be positive. If you want to set max_age to infinite,
       then you can use the :any:`bob.bio.video.annotator.Wrapper` instead.
-  validator : callable
+  validator : ``callable``
       A function that takes the annotations of a frame and validates it.
 
 

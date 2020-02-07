@@ -10,7 +10,7 @@ def normalize_annotations(annotations, validator, max_age=-1):
       strings (starting from 0). The inside dicts contain annotations for that
       frame. The dictionary needs to be an ordered dict in order for this to
       work.
-  validator : callable
+  validator : ``callable``
       Takes a dict (annotations) and returns True if the annotations are valid.
       This can be a check based on minimal face size for example: see
       :any:`bob.bio.face.annotator.min_face_size_validator`.
