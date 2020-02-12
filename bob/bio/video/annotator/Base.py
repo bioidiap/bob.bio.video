@@ -9,7 +9,7 @@ class Base(bob.bio.base.annotator.Annotator):
   ----------
   frame_selector : :any:`bob.bio.video.FrameSelector`
     A frame selector class to define, which frames of the video to use.
-  read_original_data : callable
+  read_original_data : ``callable``
     A function with the signature of
     ``data = read_original_data(biofile, directory, extension)``
     that will be used to load the data from biofiles. By default the
