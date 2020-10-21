@@ -51,11 +51,11 @@ class Wrapper(TransformerMixin, BaseEstimator):
 
     def __init__(
         self,
-        transformer,
+        estimator,
         **kwargs,
     ):
         super().__init__(**kwargs)
-        self.transformer = transformer
+        self.estimator = estimator
 
     def transform(self, videos, **kwargs):
         transformed_videos = []
@@ -76,12 +76,12 @@ class Wrapper(TransformerMixin, BaseEstimator):
                     for index in video.indices
                 ]
 
-            data = self.transformer.transform(video, **kw)
+            data = self.estimator.transform(video, **kw)
 
             dl, vl = len(data), len(video)
             if dl != vl:
                 raise NotImplementedError(
-                    f"Length of transformed data ({dl}) using {self.transformer}"
+                    f"Length of transformed data ({dl}) using {self.estimator}"
                     f" is different from the length of input video: {vl}"
                 )
 
