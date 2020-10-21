@@ -35,9 +35,21 @@ class FrameSelector:
                 "Unknown selection style '%s', choose one of ('first', 'spread', 'step', 'all')"
                 % selection_style
             )
-        self.selection = selection_style
-        self.max_frames = max_number_of_frames
-        self.step = step_size
+        self.selection_style = selection_style
+        self.max_number_of_frames = max_number_of_frames
+        self.step_size = step_size
+
+    @property
+    def selection(self):
+        return self.selection_style
+
+    @property
+    def max_frames(self):
+        return self.max_number_of_frames
+
+    @property
+    def step(self):
+        return self.step_size
 
     def __call__(self, data, load_function=bob.io.base.load):
         """Selects frames and returns them in a FrameContainer.
