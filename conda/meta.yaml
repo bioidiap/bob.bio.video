@@ -31,7 +31,6 @@ requirements:
     - bob.sp
     - bob.ip.base
     - bob.ip.color
-    - bob.ip.draw
     - bob.ip.gabor
     - bob.learn.linear
     - bob.learn.em
@@ -39,9 +38,7 @@ requirements:
     - bob.db.base
     - bob.bio.base
     - bob.bio.face
-    - bob.learn.boosting
     - bob.ip.facedetect
-    - bob.ip.flandmark
   run:
     - python
     - setuptools
