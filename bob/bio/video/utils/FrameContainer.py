@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
-
 import bob.bio.base
-import numpy
+import numpy as np
+import h5py
 import logging
 
 logger = logging.getLogger(__name__)
@@ -59,9 +57,99 @@ def select_frames(count, max_number_of_frames, selection_style, step_size):
     return indices
 
 
+class VideoAsArray:
+    def __init__(
+        self,
+        path,
+        selection_style="spread",
+        max_number_of_frames=20,
+        step_size=10,
+        **kwargs,
+    ):
+        super().__init__(**kwargs)
+        self.path = path
+        reader = self.reader
+        self.dtype, shape = reader.video_type[:2]
+        self.ndim = len(shape)
+        self.selection_style = selection_style
+        indices = select_frames(
+            count=reader.number_of_frames,
+            max_number_of_frames=max_number_of_frames,
+            selection_style=selection_style,
+            step_size=step_size,
+        )
+        self.indices = indices
+        self.shape = (len(indices),) + shape[1:]
+
+    @property
+    def reader(self):
+        return bob.io.video.reader(self.path)
+
+    def __len__(self):
+        return self.shape[0]
+
+    def __getitem__(self, index):
+        if isinstance(index, int):
+            idx = self.indices[index]
+            return self.reader[idx]
+
+        if not (isinstance(index, tuple) and len(index) == self.ndim):
+            raise NotImplementedError(f"Indxing like {index} is not supported yet!")
+
+        if all(i == slice(0, 0) for i in index):
+            return np.array([], dtype=self.dtype)
+
+        if self.selection_style == "all":
+            return np.asarray(self.reader.load())[index]
+
+        idx = self.indices[index[0]]
+        video = []
+        for i, frame in enumerate(self.reader):
+            if i not in idx:
+                continue
+            video.append(frame)
+            if i == idx[-1]:
+                break
+
+        index = (slice(len(video)),) + index[1:]
+        return np.asarray(video)[index]
+
+    def __repr__(self):
+        return f"{self.reader!r} {self.dtype!r} {self.ndim!r} {self.shape!r} {self.indices!r}"
+
+
+class VideoLikeContainer:
+    def __init__(self, data, indices, **kwargs):
+        super().__init__(**kwargs)
+        self.data = data
+        self.indices = indices
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, item):
+        return self.data[item]
+
+    def __array__(self, dtype=None, *args, **kwargs):
+        return np.asarray(self.data, dtype, *args, **kwargs)
+
+    @classmethod
+    def save(cls, other, file):
+        with h5py.File(file, mode="w") as f:
+            f["data"] = other.data
+            f["indices"] = other.indices
+
+    @classmethod
+    def load(cls, file):
+        with h5py.File(file, mode="r") as f:
+            data = np.array(f["data"])
+            indices = np.array(f["indices"])
+        self = cls(data=data, indices=indices)
+        return self
+
+
 class FrameContainer:
-    """A class for reading, manipulating and saving video content.
-    """
+    """A class for reading, manipulating and saving video content."""
 
     def __init__(self, hdf5=None, load_function=bob.bio.base.load, **kwargs):
         super().__init__(**kwargs)
@@ -163,7 +251,7 @@ class FrameContainer:
         return self
 
     def save(self, hdf5, save_function=bob.bio.base.save):
-        """ Save the content to the given HDF5 File.
+        """Save the content to the given HDF5 File.
         The contained data will be written using the given save_function."""
         if not len(self):
             logger.warn("Saving empty FrameContainer '%s'", hdf5.filename)
@@ -191,7 +279,7 @@ class FrameContainer:
                 return False
             if abs(a[2] - b[2]) > 1e-8:
                 return False
-            if not numpy.allclose(a[1], b[1]):
+            if not np.allclose(a[1], b[1]):
                 return False
         return True
 
