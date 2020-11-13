@@ -2,12 +2,12 @@ import logging
 
 from sklearn.base import BaseEstimator, TransformerMixin
 
-from .. import utils
+from . import utils
 
 logger = logging.getLogger(__name__)
 
 
-class Wrapper(TransformerMixin, BaseEstimator):
+class VideoWrapper(TransformerMixin, BaseEstimator):
     """Wrapper class to run image preprocessing algorithms on video data.
 
     This class provides functionality to read original video data from several databases.
@@ -80,7 +80,7 @@ class Wrapper(TransformerMixin, BaseEstimator):
 
             dl, vl = len(data), len(video)
             if dl != vl:
-                raise NotImplementedError(
+                raise RuntimeError(
                     f"Length of transformed data ({dl}) using {self.estimator}"
                     f" is different from the length of input video: {vl}"
                 )
@@ -94,7 +94,10 @@ class Wrapper(TransformerMixin, BaseEstimator):
         return transformed_videos
 
     def _more_tags(self):
-        return {"stateless": True, "requires_fit": False}
+        tags = self.estimator._get_tags()
+        tags["bob_features_save_fn"] = utils.VideoLikeContainer.save
+        tags["bob_features_load_fn"] = utils.VideoLikeContainer.load
+        return tags
 
     def fit(self, X, y=None, **fit_params):
         """Does nothing"""
