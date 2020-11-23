@@ -54,16 +54,6 @@ def normalize_annotations(annotations, validator, max_age=-1):
 
 class Base(bob.bio.base.annotator.Annotator):
     """The base class for video annotators.
-
-    Parameters
-    ----------
-    frame_selector : :any:`bob.bio.video.FrameSelector`
-      A frame selector class to define, which frames of the video to use.
-    read_original_data : ``callable``
-      A function with the signature of
-      ``data = read_original_data(biofile, directory, extension)``
-      that will be used to load the data from biofiles. By default the
-      ``frame_selector`` is used to load the data.
     """
 
     @staticmethod
@@ -72,7 +62,7 @@ class Base(bob.bio.base.annotator.Annotator):
 
         Parameters
         ----------
-        frames : :any:`bob.bio.video.FrameContainer` or an iterable of arrays
+        frames : :any:`bob.bio.video.VideoLikeContainer` or :any:`bob.bio.video.VideoAsArray` or :any:`numpy.array`
             The frames of the video file.
 
         Yields
@@ -82,8 +72,8 @@ class Base(bob.bio.base.annotator.Annotator):
         frame : :any:`numpy.array`
             The frame of the video file as an array.
         """
-        if isinstance(frames, utils.FrameContainer):
-            for fid, fr, _ in frames:
+        if isinstance(frames, (utils.VideoAsArray, utils.VideoLikeContainer)):
+            for fid, fr in zip(frames.indices, frames):
                 yield fid, fr
         else:
             for fid, fr in enumerate(frames):
@@ -94,7 +84,7 @@ class Base(bob.bio.base.annotator.Annotator):
 
         Parameters
         ----------
-        frames : :any:`bob.bio.video.FrameContainer` or :any:`numpy.array`
+        frames : :any:`bob.bio.video.VideoLikeContainer` or :any:`bob.bio.video.VideoAsArray` or :any:`numpy.array`
             The frames of the video file.
         **kwargs
             Extra arguments that annotators may need.
@@ -112,6 +102,16 @@ class Base(bob.bio.base.annotator.Annotator):
             the input in your implementation.
         """
         raise NotImplementedError()
+
+    def transform(self, samples):
+        """Takes a batch of data and annotates them.
+
+        Each ``kwargs`` value is a list of parameters, with each element of those
+        lists corresponding to each element of ``samples`` (for example:
+        with ``[s1, s2, ...]`` as ``samples``, ``kwargs['annotations']``
+        should contain ``[{<s1_annotations>}, {<s2_annotations>}, ...]``).
+        """
+        return [self.annotate(sample) for sample in samples]
 
 
 class FailSafeVideo(Base):
@@ -146,27 +146,36 @@ class FailSafeVideo(Base):
         self,
         annotators,
         max_age=15,
-        validator=bob.bio.face.annotator.min_face_size_validator,
+        validator=None,
         **kwargs,
     ):
         super().__init__(**kwargs)
-        assert max_age > 0, "max_age: `{}' cannot be less than 1".format(max_age)
+
+        if max_age <= 0:
+            raise ValueError(
+                f"max_age: `{max_age}' cannot be less than 1, If you want to set max_age to infinite,"
+                "then you can use the :any:`bob.bio.video.annotator.Wrapper` with `normalize` set to True."
+            )
+        self.max_age = max_age
+
+        if validator is None:
+            validator = bob.bio.face.annotator.min_face_size_validator
+        self.validator = validator
+
         self.annotators = []
         for annotator in annotators:
             if isinstance(annotator, str):
                 annotator = bob.bio.base.load_resource(annotator, "annotator")
             self.annotators.append(annotator)
-        self.max_age = max_age
-        self.validator = validator
 
-    def annotate(self, frames, **kwargs):
+    def annotate(self, frames):
         """See :any:`Base.annotate`"""
-        annotations = collections.OrderedDict()
+        video_annotations = collections.OrderedDict()
         current = None
         age = 0
         for i, frame in self.frame_ids_and_frames(frames):
             for annotator in self.annotators:
-                annot = annotator.annotate(frame, **kwargs)
+                annot = annotator.transform([frame])[0]
                 if annot and self.validator(annot):
                     current = annot
                     age = 0
@@ -180,8 +189,8 @@ class FailSafeVideo(Base):
                 if current is not annot:
                     logger.debug("Annotator `%s' failed.", annotator)
 
-            annotations[i] = current
-        return annotations
+            video_annotations[i] = current
+        return video_annotations
 
 
 class Wrapper(Base):
@@ -215,7 +224,7 @@ class Wrapper(Base):
         self,
         annotator,
         normalize=False,
-        validator=bob.bio.face.annotator.min_face_size_validator,
+        validator=None,
         max_age=-1,
         **kwargs,
     ):
@@ -225,16 +234,20 @@ class Wrapper(Base):
         if isinstance(annotator, str):
             annotator = bob.bio.base.load_resource(annotator, "annotator")
         self.annotator = annotator
-        self.normalize = normalize
+
+        if validator is None:
+            validator = bob.bio.face.annotator.min_face_size_validator
         self.validator = validator
+
+        self.normalize = normalize
         self.max_age = max_age
 
-    def annotate(self, frames, **kwargs):
+    def annotate(self, frames):
         """See :any:`Base.annotate`"""
         annotations = collections.OrderedDict()
         for i, frame in self.frame_ids_and_frames(frames):
             logger.debug("Annotating frame %s", i)
-            annotations[i] = self.annotator(frame, **kwargs)
+            annotations[i] = self.annotator.transform([frame])[0]
         if self.normalize:
             annotations = collections.OrderedDict(
                 normalize_annotations(annotations, self.validator, self.max_age)

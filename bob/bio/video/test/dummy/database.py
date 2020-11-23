@@ -1,17 +1,15 @@
 from bob.bio.base.database import ZTBioDatabase
 from bob.bio.base.test.utils import atnt_database_directory
-from bob.bio.base.database.file import BioFile
 from bob.bio.video.database import VideoBioFile
-from bob.bio.video.utils import FrameContainer
+from bob.bio.video import VideoLikeContainer
 import bob.io.base
 import os
 
 
 class DummyBioFile(VideoBioFile):
-    def load(self, directory=None, extension='.pgm', frame_selector=None):
-        file_name = self.make_path(directory, extension)
-        fc = FrameContainer()
-        fc.add(os.path.basename(file_name), bob.io.base.load(file_name))
+    def load(self):
+        file_name = self.make_path(self.original_directory, self.original_extension)
+        fc = VideoLikeContainer([bob.io.base.load(file_name)], [os.path.basename(file_name)])
         return fc
 
 

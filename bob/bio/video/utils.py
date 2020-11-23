@@ -1,6 +1,7 @@
 import logging
 
-import bob.bio.base
+from bob.bio.base import selected_indices
+from bob.io.video import reader
 import h5py
 import numpy as np
 
@@ -57,7 +58,7 @@ def select_frames(
         indices = range(0, min(count, max_number_of_frames))
     elif selection_style == "spread":
         # get frames lineraly spread over all frames
-        indices = bob.bio.base.selected_indices(count, max_number_of_frames)
+        indices = selected_indices(count, max_number_of_frames)
     elif selection_style == "step":
         indices = range(step_size // 2, count, step_size)[:max_number_of_frames]
     elif selection_style == "all":
@@ -69,9 +70,10 @@ def select_frames(
 
 
 class VideoAsArray:
-    """A memory efficient class to load only select video frames
+    """A memory efficient class to load only select video frames.
     It also supports efficient conversion to dask arrays.
     """
+
     def __init__(
         self,
         path,
@@ -100,7 +102,7 @@ class VideoAsArray:
         """
         super().__init__(**kwargs)
         self.path = path
-        self.reader = bob.io.video.reader(self.path)
+        self.reader = reader(self.path)
         self.dtype, shape = self.reader.video_type[:2]
         self.ndim = len(shape)
         self.selection_style = selection_style
@@ -113,8 +115,10 @@ class VideoAsArray:
         self.indices = indices
         self.shape = (len(indices),) + shape[1:]
         if transform is None:
+
             def transform(x):
                 return x
+
         self.transform = transform
 
     def __getstate__(self):
@@ -124,7 +128,7 @@ class VideoAsArray:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.reader = bob.io.video.reader(self.path)
+        self.reader = reader(self.path)
 
     def __len__(self):
         return self.shape[0]
@@ -166,17 +170,36 @@ class VideoLikeContainer:
         self.data = data
         self.indices = indices
 
+    @property
+    def dtype(self):
+        return self.data.dtype
+
+    @property
+    def shape(self):
+        return self.data.shape
+
+    @property
+    def ndim(self):
+        return self.data.ndim
+
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, item):
+        # we need to throw IndexErrors here because h5py throws ValueErrors
+        # instead and this breaks loops on this class
+        if isinstance(item, int) and item >= len(self):
+            raise IndexError(f"Index ({item}) out of range (0-{len(self)-1})")
         return self.data[item]
 
     def __array__(self, dtype=None, *args, **kwargs):
         return np.asarray(self.data, dtype, *args, **kwargs)
 
+    def save(self, file):
+        self.save_function(self, file)
+
     @classmethod
-    def save(cls, other, file):
+    def save_function(cls, other, file):
         with h5py.File(file, mode="w") as f:
             f["data"] = other.data
             f["indices"] = other.indices

@@ -11,33 +11,38 @@ import bob.io.base
 from bob.bio.base.database import ZTBioDatabase
 from bob.extension import rc
 
-from ..utils import VideoLikeContainer
+from ..utils import VideoLikeContainer, select_frames
 from .database import VideoBioFile
 
 
 class YoutubeBioFile(VideoBioFile):
     def __init__(self, f, **kwargs):
         super().__init__(client_id=f.client_id, path=f.path, file_id=f.id, **kwargs)
-        if self.selection_style != "all":
-            raise ValueError("Only selection style of 'all' is supported.")
         self._f = f
 
-    def files(self, directory=None, extension=".jpg"):
-        base_dir = self.make_path(directory, "")
+    def files(self):
+        base_dir = self.make_path(self.original_directory, "")
         # collect all files from the data directory
         files = [os.path.join(base_dir, f) for f in sorted(os.listdir(base_dir))]
         # filter files with the given extension
-        if extension is not None:
-            files = [f for f in files if os.path.splitext(f)[1] == extension]
+        if self.original_extension is not None:
+            files = [
+                f for f in files if os.path.splitext(f)[1] == self.original_extension
+            ]
         return files
 
-    def load(self, directory=None, extension=None, frame_selector=FrameSelector()):
-        if extension not in (None, ".jpg"):
-            raise ValueError(f"Unsupported extension {extension}")
+    def load(self, *args, **kwargs):
+        files = self.files()
+        files_indices = select_frames(
+            len(files),
+            max_number_of_frames=self.max_number_of_frames,
+            selection_style=self.selection_style,
+            step_size=self.step_size,
+        )
         data, indices = [], []
-        files = self.files(directory, extension)
-        for f in frame_selector(files):
-            file_name = os.path.join(self.make_path(directory, ""), f[0])
+        for i, file_name in enumerate(files):
+            if i not in files_indices:
+                continue
             indices.append(os.path.basename(file_name))
             data.append(bob.io.base.load(file_name))
         return VideoLikeContainer(data=data, indices=indices)
@@ -86,6 +91,13 @@ class YoutubeBioDatabase(ZTBioDatabase):
     def tmodel_ids_with_protocol(self, protocol=None, groups=None, **kwargs):
         return self._db.tmodel_ids(protocol=protocol, groups=groups, **kwargs)
 
+    def _populate_files_attrs(self, files):
+        for f in files:
+            f.original_directory = self.original_directory
+            f.original_extension = self.original_extension
+            f.annotation_extension = self.annotation_extension
+        return files
+
     def objects(
         self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs
     ):
@@ -96,17 +108,17 @@ class YoutubeBioDatabase(ZTBioDatabase):
             model_ids=model_ids,
             **kwargs,
         )
-        return [YoutubeBioFile(f) for f in retval]
+        return self._populate_files_attrs([YoutubeBioFile(f) for f in retval])
 
     def tobjects(self, groups=None, protocol=None, model_ids=None, **kwargs):
         retval = self._db.tobjects(
             groups=groups, protocol=protocol, model_ids=model_ids, **kwargs
         )
-        return [YoutubeBioFile(f) for f in retval]
+        return self._populate_files_attrs([YoutubeBioFile(f) for f in retval])
 
     def zobjects(self, groups=None, protocol=None, **kwargs):
         retval = self._db.zobjects(groups=groups, protocol=protocol, **kwargs)
-        return [YoutubeBioFile(f) for f in retval]
+        return self._populate_files_attrs([YoutubeBioFile(f) for f in retval])
 
     def annotations(self, myfile):
         return self._db.annotations(myfile._f)
