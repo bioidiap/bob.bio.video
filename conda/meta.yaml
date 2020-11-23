@@ -33,7 +33,7 @@ requirements:
     - setuptools
     - {{ pin_compatible('numpy') }}
     - {{ pin_compatible('h5py') }}
-    - {{ pin_compatible('scikit_learn') }}
+    - {{ pin_compatible('scikit-learn') }}
 
 test:
   imports:
