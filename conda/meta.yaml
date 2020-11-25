@@ -20,28 +20,20 @@ requirements:
   host:
     - python {{ python }}
     - setuptools {{ setuptools }}
+    - numpy {{ numpy }}
+    - h5py {{ h5py }}
+    - scikit-learn {{ scikit_learn }}
     - bob.extension
-    - bob.blitz
-    - bob.core
     - bob.io.base
-    - bob.io.image
     - bob.io.video
-    - bob.learn.activation
-    - bob.math
-    - bob.sp
-    - bob.ip.base
-    - bob.ip.color
-    - bob.ip.gabor
-    - bob.learn.linear
-    - bob.learn.em
-    - bob.measure
-    - bob.db.base
     - bob.bio.base
     - bob.bio.face
-    - bob.ip.facedetect
   run:
     - python
     - setuptools
+    - {{ pin_compatible('numpy') }}
+    - {{ pin_compatible('h5py') }}
+    - {{ pin_compatible('scikit-learn') }}
 
 test:
   imports:
@@ -59,9 +51,9 @@ test:
     - sphinx
     - sphinx_rtd_theme
     - bob.db.atnt
-    - bob.db.mobio
+    - bob.io.image
     - bob.db.youtube
-    - gridtk
+    - dask
 
 about:
   home: https://www.idiap.ch/software/bob/

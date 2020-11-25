@@ -13,7 +13,6 @@ In this package, tools to run video face recognition experiments are provided.
 So far, a single set of tools is available, which are meta-classes that allow to use other well-established face recognition algorithms on video data.
 
 For more detailed information about the structure of the ``bob.bio`` packages, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`.
-Particularly, the installation of this and other ``bob.bio`` packages, please read the :ref:`bob.bio.base.installation`.
 
 In the following, we provide more detailed information about the particularities of this package only.
 

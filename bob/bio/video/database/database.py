@@ -1,19 +1,48 @@
-#!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
-# Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
-# Wed 20 July 14:43:22 CEST 2016
-
 from bob.bio.base.database.file import BioFile
-from ..utils import FrameSelector
+
+from ..utils import VideoAsArray
 
 
 class VideoBioFile(BioFile):
-    def __init__(self, client_id, path, file_id, **kwargs):
+    def __init__(
+        self,
+        client_id,
+        path,
+        file_id,
+        original_directory=None,
+        original_extension=".avi",
+        annotation_directory=None,
+        annotation_extension=None,
+        annotation_type=None,
+        selection_style=None,
+        max_number_of_frames=None,
+        step_size=None,
+        **kwargs,
+    ):
         """
         Initializes this File object with an File equivalent for
         VoxForge database.
         """
-        super(VideoBioFile, self).__init__(client_id=client_id, path=path, file_id=file_id, **kwargs)
+        super().__init__(
+            client_id=client_id,
+            path=path,
+            file_id=file_id,
+            original_directory=original_directory,
+            original_extension=original_extension,
+            annotation_directory=annotation_directory,
+            annotation_extension=annotation_extension,
+            annotation_type=annotation_type,
+            **kwargs,
+        )
+        self.selection_style = selection_style or "all"
+        self.max_number_of_frames = max_number_of_frames
+        self.step_size = step_size
 
-    def load(self, directory=None, extension='.avi', frame_selector=FrameSelector()):
-        return frame_selector(self.make_path(directory, extension))
+    def load(self):
+        path = self.make_path(self.original_directory, self.original_extension)
+        return VideoAsArray(
+            path,
+            selection_style=self.selection_style,
+            max_number_of_frames=self.max_number_of_frames,
+            step_size=self.step_size,
+        )

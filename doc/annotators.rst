@@ -5,7 +5,7 @@
 Annotating Video Databases
 ==========================
 
-Please see :ref:`bob.bio.base.annotations` and :ref:`bob.bio.face.annotators`
+Please see :ref:`bob.bio.base.annotators` and :ref:`bob.bio.face.annotators`
 first before reading this page.
 
 This package provides two wrappers that can be used to annotate video
