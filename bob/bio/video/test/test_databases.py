@@ -12,9 +12,6 @@ def test_youtube():
     database = bob.bio.base.load_resource(
         "youtube", "database", preferred_package="bob.bio.video"
     )
-    database.database.original_directory = pkg_resources.resource_filename(
-        "bob.bio.video", "test/data"
-    )
     try:
         check_database_zt(database, training_depends=True, models_depend=True)
     except IOError as e:
@@ -23,6 +20,8 @@ def test_youtube():
             % e
         )
     try:
+        if database.database.original_directory is None:
+            raise SkipTest("The annotations cannot be queried as original_directory is None")
         _check_annotations(database, limit_files=1000, topleft=True, framed=True)
     except IOError as e:
         raise SkipTest(
