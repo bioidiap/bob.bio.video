@@ -135,30 +135,61 @@ class VideoAsArray:
 
     def __getitem__(self, index):
         # logger.debug("Getting frame %s from %s", index, self.path)
+
+        # In this method, someone is requesting indices thinking this video has
+        # the shape of self.shape but self.shape is determined through
+        # select_frames parameters. What we want to do here is to translate
+        # ``index`` to real indices of the video file given that we want to load
+        # only the selected frames. List of the selected frames are stored in
+        # self.indices
+
+        # If only one frame is requested, first translate the index to the real
+        # frame number in the video file and load that
         if isinstance(index, int):
             idx = self.indices[index]
             return self.transform([self.reader[idx]])[0]
 
-        if not (isinstance(index, tuple) and len(index) == self.ndim):
+        if not (
+            isinstance(index, tuple)
+            and len(index) == self.ndim
+            and all(isinstance(idx, slice) for idx in index)
+        ):
             raise NotImplementedError(f"Indxing like {index} is not supported yet!")
 
+        # dask.array.from_array sometimes requests empty arrays
         if all(i == slice(0, 0) for i in index):
             return np.array([], dtype=self.dtype)
 
-        if self.selection_style == "all":
-            return self.transform(np.asarray(self.reader.load())[index])
+        def _frames_generator():
+            # read the frames one by one and yield them
+            real_frame_numbers = self.indices[index[0]]
+            for i, frame in enumerate(self.reader):
+                if i not in real_frame_numbers:
+                    continue
+                # make sure arrays are loaded in C order because we reshape them
+                # by C order later. Also, index into the frames here
+                frame = np.ascontiguousarray(frame)[index[1:]]
+                # return a tuple of flat array to match what is expected by
+                # field_dtype
+                yield (frame.ravel(),)
+                if i == real_frame_numbers[-1]:
+                    break
 
-        idx = self.indices[index[0]]
-        video = []
-        for i, frame in enumerate(self.reader):
-            if i not in idx:
-                continue
-            video.append(frame)
-            if i == idx[-1]:
-                break
+        iterable = _frames_generator()
+        # compute the final shape given self.shape and index
+        # see https://stackoverflow.com/a/36188683/1286165
+        shape = [len(range(*idx.indices(dim))) for idx, dim in zip(index, self.shape)]
+        # field_dtype contains information about dtype and shape of each frame
+        # numpy black magic: https://stackoverflow.com/a/12473478/1286165 allows
+        # us to yield frame by frame in _frames_generator which greatly speeds
+        # up loading the video
+        field_dtype = [("", (self.dtype, (np.prod(shape[1:]),)))]
+        total_number_of_frames = shape[0]
+        video = np.fromiter(iterable, field_dtype, total_number_of_frames)
+        # view the array as self.dtype to remove the field_dtype
+        video = np.reshape(video.view(self.dtype), shape, order="C")
 
-        index = (slice(len(video)),) + index[1:]
-        return self.transform(np.asarray(video)[index])
+        return self.transform(video)
 
     def __repr__(self):
         return f"{self.reader!r} {self.dtype!r} {self.ndim!r} {self.shape!r} {self.indices!r}"

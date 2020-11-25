@@ -53,6 +53,7 @@ test:
     - bob.db.atnt
     - bob.io.image
     - bob.db.youtube
+    - dask
 
 about:
   home: https://www.idiap.ch/software/bob/
