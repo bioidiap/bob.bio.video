@@ -52,7 +52,6 @@ test:
     - sphinx_rtd_theme
     - bob.db.atnt
     - bob.io.image
-    - bob.db.youtube
     - dask
 
 about:

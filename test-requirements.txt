@@ -1,4 +1,3 @@
 bob.io.image
 bob.db.atnt
-bob.db.youtube
 dask
