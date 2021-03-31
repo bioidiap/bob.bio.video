@@ -47,6 +47,7 @@ test:
   requires:
     - bob-devel {{ bob_devel }}.*
     - nose
+    - pytest
     - coverage
     - sphinx
     - sphinx_rtd_theme
