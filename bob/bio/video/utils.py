@@ -229,8 +229,8 @@ class VideoLikeContainer:
     def save(self, file):
         self.save_function(self, file)
 
-    @classmethod
-    def save_function(cls, other, file):
+    @staticmethod
+    def save_function(other, file):
         with h5py.File(file, mode="w") as f:
             f["data"] = other.data
             f["indices"] = other.indices

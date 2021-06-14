@@ -1,7 +1,7 @@
 import logging
 
 from sklearn.base import BaseEstimator, TransformerMixin
-
+from bob.pipelines.wrappers import _check_n_input_output, _frmt
 from . import utils
 
 logger = logging.getLogger(__name__)
@@ -43,20 +43,33 @@ class VideoWrapper(TransformerMixin, BaseEstimator):
                     for index in video.indices
                 ]
 
-            data = self.estimator.transform(video, **kw)
+            # remove None's before calling and add them back in data later
+            # Isolate invalid samples (when previous transformers returned None)
+            invalid_ids = [i for i, frame in enumerate(video) if frame is None]
+            valid_frames = [frame for frame in video if frame is not None]
 
-            dl, vl = len(data), len(video)
-            if dl != vl:
-                raise RuntimeError(
-                    f"Length of transformed data ({dl}) using {self.estimator}"
-                    f" is different from the length of input video: {vl}"
+            # remove invalid kw args as well
+            for k, v in kw.items():
+                kw[k] = [vv for j, vv in enumerate(v) if j not in invalid_ids]
+
+            # Process only the valid samples
+            output = None
+            if len(valid_frames) > 0:
+                output = self.estimator.transform(valid_frames, **kw)
+                _check_n_input_output(
+                    valid_frames, output, f"{_frmt(self.estimator)}.transform"
                 )
 
-            # handle None's
-            indices = [idx for d, idx in zip(data, video.indices) if d is not None]
-            data = [d for d in data if d is not None]
+            if output is None:
+                output = [None] * len(valid_frames)
 
-            data = utils.VideoLikeContainer(data, indices)
+            # Rebuild the full batch of samples (include the previously failed)
+            if len(invalid_ids) > 0:
+                output = list(output)
+                for j in invalid_ids:
+                    output.insert(j, None)
+
+            data = utils.VideoLikeContainer(output, video.indices)
             transformed_videos.append(data)
         return transformed_videos
 
