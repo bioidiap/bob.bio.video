@@ -1,9 +1,11 @@
+import tempfile
 import time
+
+import bob.bio.video
+import numpy as np
 from bob.bio.base.test.utils import is_library_available
 from bob.io.base.test_utils import datafile
 from bob.io.video import reader
-import numpy as np
-import bob.bio.video
 
 regenerate_refs = False
 
@@ -24,9 +26,7 @@ def test_video_as_array():
     video = video[None, ...]
     np.testing.assert_allclose(video, video_slice)
 
-    video = bob.bio.video.VideoAsArray(
-        path, max_number_of_frames=3
-    )
+    video = bob.bio.video.VideoAsArray(path, max_number_of_frames=3)
     assert len(video) == 3, len(video)
     assert video.indices == [13, 41, 69], video.indices
     assert video.shape == (3, 3, 480, 640), video.shape
@@ -68,8 +68,14 @@ def test_video_like_container():
         container.save(container_path)
 
     loaded_container = bob.bio.video.VideoLikeContainer.load(container_path)
+    assert container == loaded_container
 
-    np.testing.assert_equal(np.array(container.data), np.array(loaded_container.data))
-    np.testing.assert_equal(
-        np.array(container.indices), np.array(loaded_container.indices)
-    )
+    # test saving and loading None arrays
+    with tempfile.NamedTemporaryFile(suffix=".pkl") as f:
+        data = [None] * 10 + [1]
+        indices = range(11)
+        frame_container = bob.bio.video.VideoLikeContainer(data, indices)
+        frame_container.save(f.name)
+
+        loaded = bob.bio.video.VideoLikeContainer.load(f.name)
+        assert loaded == frame_container
