@@ -1,9 +1,10 @@
 import logging
+import pickle
 
-from bob.bio.base import selected_indices
-from bob.io.video import reader
 import h5py
 import numpy as np
+from bob.bio.base import selected_indices
+from bob.io.video import reader
 
 logger = logging.getLogger(__name__)
 
@@ -226,21 +227,34 @@ class VideoLikeContainer:
     def __array__(self, dtype=None, *args, **kwargs):
         return np.asarray(self.data, dtype, *args, **kwargs)
 
+    def __eq__(self, o: object) -> bool:
+        return np.array_equal(self.data, o.data) and np.array_equal(
+            self.indices, o.indices
+        )
+
     def save(self, file):
         self.save_function(self, file)
 
     @staticmethod
     def save_function(other, file):
-        with h5py.File(file, mode="w") as f:
-            f["data"] = other.data
-            f["indices"] = other.indices
+        try:
+            with h5py.File(file, mode="w") as f:
+                f["data"] = other.data
+                f["indices"] = other.indices
+        # revert to saving data in pickles when the dtype is not supported by hdf5
+        except TypeError:
+            with open(file, "wb") as f:
+                pickle.dump({"data": other.data, "indices": other.indices}, f)
 
     @classmethod
     def load(cls, file):
-        # weak closing of the hdf5 file so we don't load all the data into
-        # memory https://docs.h5py.org/en/stable/high/file.html#closing-files
-        f = h5py.File(file, mode="r")
-        data = f["data"]
-        indices = f["indices"]
-        self = cls(data=data, indices=indices)
+        try:
+            # weak closing of the hdf5 file so we don't load all the data into
+            # memory https://docs.h5py.org/en/stable/high/file.html#closing-files
+            f = h5py.File(file, mode="r")
+            loaded = {"data": f["data"], "indices": f["indices"]}
+        except OSError:
+            with open(file, "rb") as f:
+                loaded = pickle.load(f)
+        self = cls(**loaded)
         return self
