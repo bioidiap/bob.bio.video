@@ -252,7 +252,7 @@ class VideoLikeContainer:
             # weak closing of the hdf5 file so we don't load all the data into
             # memory https://docs.h5py.org/en/stable/high/file.html#closing-files
             f = h5py.File(file, mode="r")
-            loaded = {"data": f["data"], "indices": f["indices"]}
+            loaded = {"data": f["data"], "indices": list(f["indices"])}
         except OSError:
             with open(file, "rb") as f:
                 loaded = pickle.load(f)
