@@ -1,5 +1,5 @@
+from .youtube import YoutubeDatabase
 from .database import VideoBioFile
-from .youtube import YoutubeBioDatabase
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -18,8 +18,5 @@ def __appropriate__(*args):
         obj.__module__ = __name__
 
 
-__appropriate__(
-    VideoBioFile,
-    YoutubeBioDatabase,
-)
-__all__ = [_ for _ in dir() if not _.startswith('_')]
+__appropriate__(YoutubeDatabase, VideoBioFile)
+__all__ = [_ for _ in dir() if not _.startswith("_")]
