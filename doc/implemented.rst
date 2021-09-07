@@ -24,7 +24,7 @@ Databases
 
 .. autosummary::
 
-   bob.bio.video.database.YoutubeBioDatabase
+   bob.bio.video.database.YoutubeDatabase
 
 Details
 -------
