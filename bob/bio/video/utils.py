@@ -5,8 +5,40 @@ import h5py
 import numpy as np
 from bob.bio.base import selected_indices
 from bob.io.video import reader
+from .transformer import VideoWrapper
+from bob.pipelines import wrap
 
 logger = logging.getLogger(__name__)
+
+
+def video_wrap_skpipeline(sk_pipeline):
+    """
+    This function takes a `sklearn.Pipeline` and wraps each estimator inside of it with
+    :any:`bob.bio.video.transformer.VideoWrapper`
+    """
+
+    for i, name, estimator in sk_pipeline._iter():
+
+        # 1. Unwrap the estimator
+        # If the estimator is `Sample` wrapped takes `estimator.estimator`.
+        transformer = (
+            estimator.estimator if hasattr(estimator, "estimator") else estimator
+        )
+
+        # 2. do a video wrap
+        transformer = VideoWrapper(transformer)
+
+        # 3. Sample wrap again
+        transformer = wrap(
+            ["sample"],
+            transformer,
+            fit_extra_arguments=estimator.fit_extra_arguments,
+            transform_extra_arguments=estimator.transform_extra_arguments,
+        )
+
+        sk_pipeline.steps[i] = (name, transformer)
+
+    return sk_pipeline
 
 
 def select_frames(

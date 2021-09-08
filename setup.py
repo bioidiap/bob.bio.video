@@ -67,7 +67,8 @@ setup(
         ],
         "bob.bio.config": [
             "mobio             = bob.bio.video.config.database.mobio",
-            "youtube             = bob.bio.video.config.database.youtube",
+            "youtube           = bob.bio.video.config.database.youtube",
+            "video-wrapper     = bob.bio.video.config.video_wrapper",
         ],
     },
     # Classifiers are important if you plan to distribute this package through

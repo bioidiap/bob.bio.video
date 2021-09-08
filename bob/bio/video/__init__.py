@@ -1,4 +1,9 @@
-from .utils import select_frames, VideoAsArray, VideoLikeContainer
+from .utils import (
+    select_frames,
+    VideoAsArray,
+    VideoLikeContainer,
+    video_wrap_skpipeline,
+)
 from . import annotator
 from . import transformer
 
@@ -31,8 +36,7 @@ def __appropriate__(*args):
 
 
 __appropriate__(
-    VideoAsArray,
-    VideoLikeContainer,
+    VideoAsArray, VideoLikeContainer,
 )
 # gets sphinx autodoc done right - don't remove it
 __all__ = [_ for _ in dir() if not _.startswith("_")]

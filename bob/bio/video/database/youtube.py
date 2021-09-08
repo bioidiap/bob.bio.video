@@ -46,6 +46,26 @@ class YoutubeDatabase(Database):
         >>> probes = youtube.probes()
 
 
+    Parameters
+    ----------
+
+        protocol: str
+           One of the Youtube above mentioned protocols 
+
+        annotation_type: str
+           One of the supported annotation types
+
+        original_directory: str
+           Original directory
+
+        extension: str
+           Default file extension
+
+        annotation_extension: str
+
+        frame_selector:
+           Pointer to a function that does frame selection.
+
     """
 
     def __init__(
@@ -55,10 +75,8 @@ class YoutubeDatabase(Database):
         fixed_positions=None,
         original_directory=rc.get("bob.bio.face.youtube.directory"),
         extension=".jpg",
-        selection_style="first",
-        max_number_of_frames=None,
-        step_size=None,
         annotation_extension=".labeled_faces.txt",
+        frame_selector=None,
     ):
 
         self._check_protocol(protocol)
@@ -89,12 +107,10 @@ class YoutubeDatabase(Database):
         self.reference_id_to_subject_id = None
         self.reference_id_to_sample = None
         self.load_file_client_id()
-        self.selection_style = selection_style
-        self.max_number_of_frames = max_number_of_frames
-        self.step_size = step_size
         self.original_directory = original_directory
         self.extension = extension
         self.annotation_extension = annotation_extension
+        self.frame_selector = frame_selector
 
         super().__init__(
             name="youtube",
@@ -142,12 +158,18 @@ class YoutubeDatabase(Database):
             [x for x in os.listdir(path) if os.path.splitext(x)[1] == ".jpg"]
         )
 
-        files_indices = select_frames(
-            len(files),
-            max_number_of_frames=self.max_number_of_frames,
-            selection_style=self.selection_style,
-            step_size=self.step_size,
+        # If there's no frame selector, uses all frames
+        files_indices = (
+            select_frames(
+                len(files),
+                max_number_of_frames=None,
+                selection_style="all",
+                step_size=None,
+            )
+            if self.frame_selector is None
+            else self.frame_selector(len(files))
         )
+
         data, indices = [], []
         for i, file_name in enumerate(files):
             if i not in files_indices:
@@ -230,6 +252,8 @@ class YoutubeDatabase(Database):
         return annots
 
     def background_model_samples(self):
+        """
+        """
         return None
 
     def references(self, group="dev"):

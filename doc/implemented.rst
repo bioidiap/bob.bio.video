@@ -17,6 +17,7 @@ Summary
    bob.bio.video.annotator.Base
    bob.bio.video.annotator.Wrapper
    bob.bio.video.annotator.FailSafeVideo
+   bob.bio.video.video_wrap_skpipeline
 
 
 Databases
