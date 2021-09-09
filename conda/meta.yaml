@@ -45,15 +45,14 @@ test:
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
-    - bob-devel {{ bob_devel }}.*
-    - nose
-    - pytest
-    - coverage
-    - sphinx
-    - sphinx_rtd_theme
+    - nose {{ nose }}
+    - pytest {{ pytest }}
+    - coverage {{ coverage }}
+    - sphinx {{ sphinx }}
+    - sphinx_rtd_theme {{ sphinx_rtd_theme }}
+    - dask {{ dask }}
     - bob.db.atnt
     - bob.io.image
-    - dask
 
 about:
   home: https://www.idiap.ch/software/bob/
