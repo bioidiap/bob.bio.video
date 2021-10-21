@@ -129,7 +129,7 @@ class FailSafeVideo(Base):
 
     Parameters
     ----------
-    annotators : :any:`list`
+    annotators : list
         A list of annotators to try.
     max_age : int
         The maximum number of frames that an annotation is valid for next frames.
