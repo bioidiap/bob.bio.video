@@ -20,7 +20,7 @@ class YoutubeDatabase(Database):
     The actual raw data for the `YouTube Faces` database should be downloaded from the original URL (though we were not able to contact the corresponding Professor).
 
     .. warning::
-      
+
       To use this dataset protocol, you need to have the original files of the YOUTUBE datasets.
       Once you have it downloaded, please run the following command to set the path for Bob
 
@@ -40,9 +40,9 @@ class YoutubeDatabase(Database):
         >>> from bob.bio.video.database import YoutubeDatabase
         >>> youtube = YoutubeDatabase(protocol="fold0")
         >>>
-        >>> # Fetching the gallery 
+        >>> # Fetching the gallery
         >>> references = youtube.references()
-        >>> # Fetching the probes 
+        >>> # Fetching the probes
         >>> probes = youtube.probes()
 
 
@@ -50,7 +50,7 @@ class YoutubeDatabase(Database):
     ----------
 
         protocol: str
-           One of the Youtube above mentioned protocols 
+           One of the Youtube above mentioned protocols
 
         annotation_type: str
            One of the supported annotation types
@@ -73,7 +73,7 @@ class YoutubeDatabase(Database):
         protocol,
         annotation_type="bounding-box",
         fixed_positions=None,
-        original_directory=rc.get("bob.bio.face.youtube.directory"),
+        original_directory=rc.get("bob.bio.video.youtube.directory", ""),
         extension=".jpg",
         annotation_extension=".labeled_faces.txt",
         frame_selector=None,
@@ -81,10 +81,11 @@ class YoutubeDatabase(Database):
 
         self._check_protocol(protocol)
 
-        if original_directory is None or not os.path.exists(original_directory):
+        original_directory = original_directory or ""
+        if not os.path.exists(original_directory):
             logger.warning(
                 "Invalid or non existant `original_directory`: f{original_directory}."
-                "Please, do `bob config set bob.bio.face.lfw.directory PATH` to set the LFW data directory."
+                "Please, do `bob config set bob.bio.video.youtube.directory PATH` to set the Youtube data directory."
             )
 
         urls = YoutubeDatabase.urls()
