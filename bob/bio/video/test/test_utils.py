@@ -57,6 +57,10 @@ def test_video_as_array_vs_dask():
 def test_video_like_container():
     path = datafile("testvideo.avi", "bob.bio.video.test")
 
+    import imageio
+
+    reader = imageio.get_reader(path)
+
     video = bob.bio.video.VideoAsArray(
         path, selection_style="spread", max_number_of_frames=3
     )

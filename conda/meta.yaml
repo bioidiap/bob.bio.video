@@ -26,9 +26,9 @@ requirements:
     - scikit-learn {{ scikit_learn }}
     - bob.extension
     - bob.io.base
-    - bob.io.video
     - bob.bio.base
-    - bob.bio.face
+    - bob.bio.face    
+    - imageio-ffmpeg
   run:
     - python
     - setuptools

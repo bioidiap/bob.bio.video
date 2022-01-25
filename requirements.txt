@@ -4,6 +4,6 @@ h5py
 scikit-learn
 bob.extension
 bob.io.base
-bob.io.video
+imageio-ffmpeg
 bob.bio.base
 bob.bio.face

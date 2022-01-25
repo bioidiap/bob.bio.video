@@ -4,9 +4,11 @@ import pickle
 import h5py
 import numpy as np
 from bob.bio.base import selected_indices
-from bob.io.video import reader
+
 from .transformer import VideoWrapper
 from bob.pipelines import wrap
+import imageio
+from bob.io.image import to_bob
 
 logger = logging.getLogger(__name__)
 
@@ -135,12 +137,14 @@ class VideoAsArray:
         """
         super().__init__(**kwargs)
         self.path = path
-        self.reader = reader(self.path)
-        self.dtype, shape = self.reader.video_type[:2]
+        self.reader = imageio.get_reader(path)
+        self.dtype = np.uint8
+        shape = self.reader.get_meta_data()["size"] + (3,)
         self.ndim = len(shape)
         self.selection_style = selection_style
+
         indices = select_frames(
-            count=self.reader.number_of_frames,
+            count=self.reader.count_frames(),
             max_number_of_frames=max_number_of_frames,
             selection_style=selection_style,
             step_size=step_size,
@@ -161,7 +165,7 @@ class VideoAsArray:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.reader = reader(self.path)
+        self.reader = imageio.get_reader(self.path)
 
     def __len__(self):
         return self.shape[0]
@@ -180,7 +184,7 @@ class VideoAsArray:
         # frame number in the video file and load that
         if isinstance(index, int):
             idx = self.indices[index]
-            return self.transform([self.reader[idx]])[0]
+            return self.transform([to_bob(self.reader.get_data(idx))])[0]
 
         if not (
             isinstance(index, tuple)
