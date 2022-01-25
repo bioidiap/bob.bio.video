@@ -139,7 +139,9 @@ class VideoAsArray:
         self.path = path
         self.reader = imageio.get_reader(path)
         self.dtype = np.uint8
-        shape = self.reader.get_meta_data()["size"] + (3,)
+        shape = (self.reader.count_frames(), 3) + self.reader.get_meta_data()["size"][
+            ::-1
+        ]
         self.ndim = len(shape)
         self.selection_style = selection_style
 
@@ -149,6 +151,7 @@ class VideoAsArray:
             selection_style=selection_style,
             step_size=step_size,
         )
+
         self.indices = indices
         self.shape = (len(indices),) + shape[1:]
         if transform is None:
@@ -182,6 +185,7 @@ class VideoAsArray:
 
         # If only one frame is requested, first translate the index to the real
         # frame number in the video file and load that
+
         if isinstance(index, int):
             idx = self.indices[index]
             return self.transform([to_bob(self.reader.get_data(idx))])[0]
@@ -201,6 +205,8 @@ class VideoAsArray:
             # read the frames one by one and yield them
             real_frame_numbers = self.indices[index[0]]
             for i, frame in enumerate(self.reader):
+
+                frame = to_bob(frame)
                 if i not in real_frame_numbers:
                     continue
                 # make sure arrays are loaded in C order because we reshape them

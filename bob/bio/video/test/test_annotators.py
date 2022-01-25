@@ -1,8 +1,6 @@
 import os
 import collections
 import bob.io.base
-import bob.io.image
-import bob.io.video
 import bob.bio.video
 import pkg_resources
 from bob.bio.video.test.dummy.database import DummyBioFile
