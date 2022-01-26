@@ -46,7 +46,7 @@ test:
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
-    - nose {{ nose }}
+    - nose {{ nose }}    
     - pytest {{ pytest }}
     - coverage {{ coverage }}
     - sphinx {{ sphinx }}
@@ -54,6 +54,7 @@ test:
     - dask {{ dask }}
     - bob.db.atnt
     - bob.io.image
+    - imageio-ffmpeg  
 
 about:
   home: https://www.idiap.ch/software/bob/
