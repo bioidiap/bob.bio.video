@@ -5,7 +5,8 @@ import bob.bio.video
 import numpy as np
 from bob.bio.base.test.utils import is_library_available
 from bob.io.base.test_utils import datafile
-from bob.io.video import reader
+import imageio
+from bob.io.image import to_bob
 
 regenerate_refs = False
 
@@ -20,8 +21,9 @@ def test_video_as_array():
 
     video_slice = video[1:2, 1:-1, 1:-1, 1:-1]
     assert video_slice.shape == (1, 1, 478, 638), video_slice.shape
-    # test the slice against the video loaded by bob.io.video directly
-    video = reader(path)[1]
+
+    # test the slice against the video loaded by imageio directly
+    video = to_bob(imageio.get_reader(path).get_data(1))
     video = video[1:-1, 1:-1, 1:-1]
     video = video[None, ...]
     np.testing.assert_allclose(video, video_slice)
@@ -40,11 +42,11 @@ def test_video_as_array_vs_dask():
     start = time.time()
     video = bob.bio.video.VideoAsArray(path, selection_style="all")
     video = dask.array.from_array(video, (20, 1, 480, 640))
-    video = video.compute()
+    video = video.compute(scheduler="single-threaded")
     load_time = time.time() - start
 
     start = time.time()
-    reference = reader(path).load()
+    reference = to_bob(np.array(list((imageio.get_reader(path).iter_data()))))
     load_time2 = time.time() - start
     # Here, we're also chunking each frame, but normally we would only chunk the first axis.
     print(
