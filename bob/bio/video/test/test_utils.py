@@ -46,7 +46,7 @@ def test_video_as_array_vs_dask():
     load_time = time.time() - start
 
     start = time.time()
-    reference = np.array([to_bob(f) for f in imageio.get_reader(path)])
+    reference = to_bob(np.array(list((imageio.get_reader(path).iter_data()))))
     load_time2 = time.time() - start
     # Here, we're also chunking each frame, but normally we would only chunk the first axis.
     print(
