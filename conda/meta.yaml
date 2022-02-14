@@ -26,15 +26,16 @@ requirements:
     - scikit-learn {{ scikit_learn }}
     - bob.extension
     - bob.io.base
-    - bob.io.video
     - bob.bio.base
-    - bob.bio.face
+    - bob.bio.face    
+    - imageio-ffmpeg {{ imageio_ffmpeg }}
   run:
     - python
     - setuptools
     - {{ pin_compatible('numpy') }}
     - {{ pin_compatible('h5py') }}
     - {{ pin_compatible('scikit-learn') }}
+    - {{ pin_compatible('imageio-ffmpeg') }}
 
 test:
   imports:
@@ -46,7 +47,7 @@ test:
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
-    - nose {{ nose }}
+    - nose {{ nose }}    
     - pytest {{ pytest }}
     - coverage {{ coverage }}
     - sphinx {{ sphinx }}
@@ -54,6 +55,7 @@ test:
     - dask {{ dask }}
     - bob.db.atnt
     - bob.io.image
+    - imageio-ffmpeg  
 
 about:
   home: https://www.idiap.ch/software/bob/
