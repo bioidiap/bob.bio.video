@@ -103,6 +103,8 @@ def select_frames(
 
     return indices
 
+def no_transform(x):
+    return x
 
 class VideoAsArray:
     """A memory efficient class to load only select video frames.
@@ -154,12 +156,7 @@ class VideoAsArray:
 
         self.indices = indices
         self.shape = (len(indices),) + shape[1:]
-        if transform is None:
-
-            def transform(x):
-                return x
-
-        self.transform = transform
+        self.transform = transform or no_transform
 
     def __getstate__(self):
         d = self.__dict__.copy()

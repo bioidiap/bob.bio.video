@@ -1,5 +1,6 @@
 import tempfile
 import time
+import pickle
 
 import bob.bio.video
 import numpy as np
@@ -18,6 +19,7 @@ def test_video_as_array():
     assert len(video) == 83, len(video)
     assert video.indices == range(83), video.indices
     assert video.shape == (83, 3, 480, 640), video.shape
+    np.testing.assert_equal(video[0][:, 0, 0], np.array([78, 103, 100]))
 
     video_slice = video[1:2, 1:-1, 1:-1, 1:-1]
     assert video_slice.shape == (1, 1, 478, 638), video_slice.shape
@@ -32,6 +34,13 @@ def test_video_as_array():
     assert len(video) == 3, len(video)
     assert video.indices == [13, 41, 69], video.indices
     assert video.shape == (3, 3, 480, 640), video.shape
+    np.testing.assert_equal(video[-1][:, 0, 0], np.array([75, 100, 97]))
+
+    # pickle video and unpickle to see if it works
+    with tempfile.NamedTemporaryFile(suffix=".pkl") as f:
+        pickle.dump(video, f)
+        f.seek(0)
+        pickle.load(f)
 
 
 @is_library_available("dask")
