@@ -103,6 +103,8 @@ def select_frames(
 
     return indices
 
+def no_transform(x):
+    return x
 
 class VideoAsArray:
     """A memory efficient class to load only select video frames.
@@ -154,12 +156,7 @@ class VideoAsArray:
 
         self.indices = indices
         self.shape = (len(indices),) + shape[1:]
-        if transform is None:
-
-            def transform(x):
-                return x
-
-        self.transform = transform
+        self.transform = transform or no_transform
 
     def __getstate__(self):
         d = self.__dict__.copy()
@@ -188,7 +185,7 @@ class VideoAsArray:
 
         if isinstance(index, int):
             idx = self.indices[index]
-            return self.transform([to_bob(self.reader.get_data(idx))])[0]
+            return self.transform(np.asarray([to_bob(self.reader.get_data(idx))]))[0]
 
         if not (
             isinstance(index, tuple)
@@ -235,7 +232,7 @@ class VideoAsArray:
         return self.transform(video)
 
     def __repr__(self):
-        return f"{self.reader!r} {self.dtype!r} {self.ndim!r} {self.shape!r} {self.indices!r}"
+        return f"VideoAsArray: {self.path!r} {self.dtype!r} {self.ndim!r} {self.shape!r} {self.indices!r}"
 
 
 class VideoLikeContainer:
