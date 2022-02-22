@@ -42,6 +42,8 @@ def test_video_as_array():
         f.seek(0)
         pickle.load(f)
 
+    assert str(video) == f"VideoAsArray: {video.path!r} {video.dtype!r} {video.ndim!r} {video.shape!r} {video.indices!r}", str(video)
+
 
 @is_library_available("dask")
 def test_video_as_array_vs_dask():

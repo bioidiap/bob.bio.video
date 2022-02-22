@@ -185,7 +185,7 @@ class VideoAsArray:
 
         if isinstance(index, int):
             idx = self.indices[index]
-            return self.transform([to_bob(self.reader.get_data(idx))])[0]
+            return self.transform(np.asarray([to_bob(self.reader.get_data(idx))]))[0]
 
         if not (
             isinstance(index, tuple)
@@ -232,7 +232,7 @@ class VideoAsArray:
         return self.transform(video)
 
     def __repr__(self):
-        return f"{self.reader!r} {self.dtype!r} {self.ndim!r} {self.shape!r} {self.indices!r}"
+        return f"VideoAsArray: {self.path!r} {self.dtype!r} {self.ndim!r} {self.shape!r} {self.indices!r}"
 
 
 class VideoLikeContainer:
