@@ -77,7 +77,7 @@ def test_wrapper_normalize():
 
     video = _get_test_video()
 
-    annotator = bob.bio.video.annotator.Wrapper("flandmark", normalize=True)
+    annotator = bob.bio.video.annotator.Wrapper("mtcnn", normalize=True)
 
     annot = annotator.transform([video])[0]
 
