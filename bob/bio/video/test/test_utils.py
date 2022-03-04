@@ -1,12 +1,14 @@
+import pickle
+import platform
 import tempfile
 import time
-import pickle
 
 import bob.bio.video
+import imageio
+import nose
 import numpy as np
 from bob.bio.base.test.utils import is_library_available
 from bob.io.base.test_utils import datafile
-import imageio
 from bob.io.image import to_bob
 
 regenerate_refs = False
@@ -42,7 +44,10 @@ def test_video_as_array():
         f.seek(0)
         pickle.load(f)
 
-    assert str(video) == f"VideoAsArray: {video.path!r} {video.dtype!r} {video.ndim!r} {video.shape!r} {video.indices!r}", str(video)
+    assert (
+        str(video)
+        == f"VideoAsArray: {video.path!r} {video.dtype!r} {video.ndim!r} {video.shape!r} {video.indices!r}"
+    ), str(video)
 
 
 @is_library_available("dask")
@@ -91,4 +96,8 @@ def test_video_like_container():
         frame_container.save(f.name)
 
         loaded = bob.bio.video.VideoLikeContainer.load(f.name)
+        np.testing.assert_allclose(loaded.indices, frame_container.indices)
+        np.testing.assert_allclose(loaded.data, frame_container.data)
+        if platform.machine() == "arm64" and platform.system() == "Darwin":
+            raise nose.SkipTest("Skipping test on arm64 macos")
         assert loaded == frame_container
