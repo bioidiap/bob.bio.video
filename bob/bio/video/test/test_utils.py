@@ -102,6 +102,6 @@ def test_video_like_container():
         frame_container.save(f.name)
 
         loaded = bob.bio.video.VideoLikeContainer.load(f.name)
-        np.testing.assert_allclose(loaded.indices, frame_container.indices)
-        np.testing.assert_allclose(loaded.data, frame_container.data)
+        np.testing.assert_equal(loaded.indices, frame_container.indices)
+        np.testing.assert_equal(loaded.data, frame_container.data)
         assert loaded == frame_container
