@@ -4,7 +4,7 @@ import bob.io.base
 import bob.bio.video
 import pkg_resources
 from bob.bio.video.test.dummy.database import DummyBioFile
-from bob.bio.face.test.test_annotators import _assert_bob_ip_facedetect
+from bob.bio.face.test.test_annotators import _assert_mtcnn
 
 
 class FailSucessAnnotator(bob.bio.base.annotator.Annotator):
@@ -40,7 +40,7 @@ def test_wrapper():
     original = image_files.load()
 
     # video preprocessor using a face crop preprocessor
-    annotator = bob.bio.video.annotator.Wrapper("facedetect")
+    annotator = bob.bio.video.annotator.Wrapper("mtcnn")
 
     assert isinstance(original, bob.bio.video.VideoLikeContainer)
     assert len(original) == 1
@@ -52,7 +52,7 @@ def test_wrapper():
     annot = annotator.transform([original])[0]
 
     assert isinstance(annot, collections.OrderedDict), annot
-    _assert_bob_ip_facedetect(annot["testimage.jpg"])
+    _assert_mtcnn(annot["testimage.jpg"])
 
 
 def _get_test_video():
@@ -77,7 +77,7 @@ def test_wrapper_normalize():
 
     video = _get_test_video()
 
-    annotator = bob.bio.video.annotator.Wrapper("flandmark", normalize=True)
+    annotator = bob.bio.video.annotator.Wrapper("mtcnn", normalize=True)
 
     annot = annotator.transform([video])[0]
 
@@ -90,7 +90,7 @@ def test_failsafe_video():
     video = _get_test_video()
 
     annotator = bob.bio.video.annotator.FailSafeVideo(
-        [FailSucessAnnotator(), "facedetect"]
+        [FailSucessAnnotator(), "mtcnn"]
     )
 
     annot = annotator.transform(video)[0]

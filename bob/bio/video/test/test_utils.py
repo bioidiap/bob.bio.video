@@ -1,12 +1,14 @@
+import pickle
+import platform
 import tempfile
 import time
-import pickle
 
 import bob.bio.video
+import imageio
+import nose
 import numpy as np
 from bob.bio.base.test.utils import is_library_available
 from bob.io.base.test_utils import datafile
-import imageio
 from bob.io.image import to_bob
 
 regenerate_refs = False
@@ -19,6 +21,8 @@ def test_video_as_array():
     assert len(video) == 83, len(video)
     assert video.indices == range(83), video.indices
     assert video.shape == (83, 3, 480, 640), video.shape
+    if platform.machine() == "arm64" and platform.system() == "Darwin":
+        raise nose.SkipTest("Skipping test on arm64 macos")
     np.testing.assert_equal(video[0][:, 0, 0], np.array([78, 103, 100]))
 
     video_slice = video[1:2, 1:-1, 1:-1, 1:-1]
@@ -42,7 +46,10 @@ def test_video_as_array():
         f.seek(0)
         pickle.load(f)
 
-    assert str(video) == f"VideoAsArray: {video.path!r} {video.dtype!r} {video.ndim!r} {video.shape!r} {video.indices!r}", str(video)
+    assert (
+        str(video)
+        == f"VideoAsArray: {video.path!r} {video.dtype!r} {video.ndim!r} {video.shape!r} {video.indices!r}"
+    ), str(video)
 
 
 @is_library_available("dask")
@@ -81,6 +88,10 @@ def test_video_like_container():
         container.save(container_path)
 
     loaded_container = bob.bio.video.VideoLikeContainer.load(container_path)
+    if platform.machine() == "arm64" and platform.system() == "Darwin":
+        raise nose.SkipTest("Skipping test on arm64 macos")
+    np.testing.assert_allclose(loaded_container.indices, container.indices)
+    np.testing.assert_allclose(loaded_container.data, container.data)
     assert container == loaded_container
 
     # test saving and loading None arrays
@@ -91,4 +102,6 @@ def test_video_like_container():
         frame_container.save(f.name)
 
         loaded = bob.bio.video.VideoLikeContainer.load(f.name)
+        np.testing.assert_equal(loaded.indices, frame_container.indices)
+        np.testing.assert_equal(loaded.data, frame_container.data)
         assert loaded == frame_container
