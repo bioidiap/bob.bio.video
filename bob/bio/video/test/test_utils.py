@@ -21,6 +21,8 @@ def test_video_as_array():
     assert len(video) == 83, len(video)
     assert video.indices == range(83), video.indices
     assert video.shape == (83, 3, 480, 640), video.shape
+    if platform.machine() == "arm64" and platform.system() == "Darwin":
+        raise nose.SkipTest("Skipping test on arm64 macos")
     np.testing.assert_equal(video[0][:, 0, 0], np.array([78, 103, 100]))
 
     video_slice = video[1:2, 1:-1, 1:-1, 1:-1]
@@ -86,6 +88,10 @@ def test_video_like_container():
         container.save(container_path)
 
     loaded_container = bob.bio.video.VideoLikeContainer.load(container_path)
+    if platform.machine() == "arm64" and platform.system() == "Darwin":
+        raise nose.SkipTest("Skipping test on arm64 macos")
+    np.testing.assert_allclose(loaded_container.indices, container.indices)
+    np.testing.assert_allclose(loaded_container.data, container.data)
     assert container == loaded_container
 
     # test saving and loading None arrays
@@ -98,6 +104,4 @@ def test_video_like_container():
         loaded = bob.bio.video.VideoLikeContainer.load(f.name)
         np.testing.assert_allclose(loaded.indices, frame_container.indices)
         np.testing.assert_allclose(loaded.data, frame_container.data)
-        if platform.machine() == "arm64" and platform.system() == "Darwin":
-            raise nose.SkipTest("Skipping test on arm64 macos")
         assert loaded == frame_container
