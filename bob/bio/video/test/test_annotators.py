@@ -90,7 +90,7 @@ def test_failsafe_video():
     video = _get_test_video()
 
     annotator = bob.bio.video.annotator.FailSafeVideo(
-        [FailSucessAnnotator(), "facedetect"]
+        [FailSucessAnnotator(), "mtcnn"]
     )
 
     annot = annotator.transform(video)[0]
