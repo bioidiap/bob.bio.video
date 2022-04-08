@@ -18,12 +18,12 @@ In the following, we provide more detailed information about the particularities
 Get Started (TLTR)
 ==================
 
-To run biometric experiments using the :doc:`vanilla_biometrics_intro` with video databases, please make usage of the `video-wrapper` `entry-point <https://packaging.python.org/specifications/entry-points/>`_.
+To run biometric experiments using the :doc:`pipeline_simple_intro` with video databases, please make usage of the `video-wrapper` `entry-point <https://packaging.python.org/specifications/entry-points/>`_.
 For instance the example below uses the `video-wrapper` to run face recognition experiments using one of our baselines from :ref:`bob.bio.face <bob.bio.face>` and the Youtube Face datase::
 
 
 
-$ bob bio pipelines vanilla-biometrics youtube arcface-insightface video-wrapper
+$ bob bio pipeline simple youtube iresnet100 video-wrapper
 
 
 

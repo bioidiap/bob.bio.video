@@ -1,4 +1,4 @@
-from bob.bio.base.pipelines.vanilla_biometrics.abstract_classes import Database
+from bob.bio.base.pipelines.abstract_classes import Database
 from bob.pipelines import DelayedSample, SampleSet
 from bob.bio.video.utils import VideoLikeContainer, select_frames
 from functools import partial
@@ -253,8 +253,7 @@ class YoutubeDatabase(Database):
         return annots
 
     def background_model_samples(self):
-        """
-        """
+        """ """
         return None
 
     def references(self, group="dev"):
