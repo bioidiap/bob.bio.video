@@ -80,10 +80,10 @@ The example below shows how to customize it for the YouTube Video Faces dataset 
     >>> database = YoutubeDatabase(protocol="fold0", frame_selector=frame_selector)
 
 
-Once this is saved into a python file (e.g. `my-dataset.py`), the vanilla-biometrics pipeline (:doc:`vanilla_biometrics_intro`) can be triggered as::
+Once this is saved into a python file (e.g. `my-dataset.py`), the PipelineSimple (:doc:`pipeline_simple_intro`) can be triggered as::
 
 
- $ bob bio pipelines vanilla-biometrics my-dataset.py [BASELINE] video-wrapper
+ $ bob bio pipeline simple my-dataset.py [BASELINE] video-wrapper
 
 
 

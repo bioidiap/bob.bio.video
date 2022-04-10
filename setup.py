@@ -24,7 +24,7 @@ setup(
     keywords="bob",
     # If you have a better, long description of your package, place it on the
     # 'doc' directory and then hook it here
-    long_description=open("README.rst").read(),
+    long_description="Video support to PipelineSimple",
     # This line is required for any distutils based packaging.
     packages=find_packages(),
     include_package_data=True,
