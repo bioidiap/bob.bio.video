@@ -3,6 +3,7 @@ from bob.bio.video.database import VideoBioFile
 from bob.bio.video import VideoLikeContainer
 import bob.io.base
 import os
+from bob.bio.base.test.dummy.database import database as ATNT_DATABASE
 
 
 class DummyBioFile(VideoBioFile):
@@ -18,14 +19,13 @@ class DummyDatabase(ZTBioDatabase):
         # call base class constructor with useful parameters
         super(DummyDatabase, self).__init__(
             name='test',
-            original_directory=atnt_database_directory(),
+            original_directory=ATNT_DATABASE.original_directory,
             original_extension='.pgm',
             check_original_files_for_existence=True,
             training_depends_on_protocol=False,
             models_depend_on_protocol=False
         )
-        import bob.db.atnt
-        self._db = bob.db.atnt.Database()
+        self._db = ATNT_DATABASE
 
     def _make_bio(self, files):
       return [DummyBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in files]

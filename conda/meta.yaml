@@ -56,8 +56,6 @@ test:
     - sphinx {{ sphinx }}
     - sphinx_rtd_theme {{ sphinx_rtd_theme }}
     - dask {{ dask }}
-    - bob.db.atnt
-    - bob.io.image
     - tensorflow {{ tensorflow }}  # to test with mtcnn
 
 about:
