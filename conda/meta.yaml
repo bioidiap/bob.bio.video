@@ -30,7 +30,7 @@ requirements:
     - bob.extension
     - bob.io.base
     - bob.bio.base
-    - bob.bio.face
+    - bob.bio.face  # [arm64]
   run:
     - python
     - setuptools
