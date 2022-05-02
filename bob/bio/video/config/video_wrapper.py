@@ -7,4 +7,3 @@ pipeline = locals().get("pipeline")
 
 
 pipeline.transformer = video_wrap_skpipeline(pipeline.transformer)
-

@@ -1,7 +1,9 @@
 import logging
 
 from sklearn.base import BaseEstimator, TransformerMixin
+
 from bob.pipelines.wrappers import _check_n_input_output, _frmt
+
 from . import utils
 
 logger = logging.getLogger(__name__)
@@ -39,7 +41,9 @@ class VideoWrapper(TransformerMixin, BaseEstimator):
                 kw = {k: v[i] for k, v in kwargs.items()}
             if "annotations" in kw:
                 kw["annotations"] = [
-                    kw["annotations"].get(index, kw["annotations"].get(str(index)))
+                    kw["annotations"].get(
+                        index, kw["annotations"].get(str(index))
+                    )
                     for index in video.indices
                 ]
 

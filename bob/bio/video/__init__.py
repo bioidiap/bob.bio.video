@@ -1,3 +1,4 @@
+# isort: skip_file
 from .utils import (
     select_frames,
     VideoAsArray,
@@ -36,7 +37,8 @@ def __appropriate__(*args):
 
 
 __appropriate__(
-    VideoAsArray, VideoLikeContainer,
+    VideoAsArray,
+    VideoLikeContainer,
 )
 # gets sphinx autodoc done right - don't remove it
 __all__ = [_ for _ in dir() if not _.startswith("_")]

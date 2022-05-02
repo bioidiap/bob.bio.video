@@ -1,8 +1,10 @@
+import pkg_resources
+
 from nose.plugins.skip import SkipTest
 
 import bob.bio.base
+
 from bob.bio.face.test.test_databases import _check_annotations
-import pkg_resources
 
 
 def test_new_youtube():
@@ -16,4 +18,3 @@ def test_new_youtube():
 
         assert len(references) == 500
         assert len(probes) == 500
-

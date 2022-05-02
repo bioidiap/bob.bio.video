@@ -53,8 +53,7 @@ def normalize_annotations(annotations, validator, max_age=-1):
 
 
 class Base(bob.bio.base.annotator.Annotator):
-    """The base class for video annotators.
-    """
+    """The base class for video annotators."""
 
     @staticmethod
     def frame_ids_and_frames(frames):
