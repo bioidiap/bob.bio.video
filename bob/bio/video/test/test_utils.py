@@ -3,10 +3,12 @@ import platform
 import tempfile
 import time
 
-import bob.bio.video
 import imageio
 import nose
 import numpy as np
+
+import bob.bio.video
+
 from bob.bio.base.test.utils import is_library_available
 from bob.io.base.test_utils import datafile
 from bob.io.image import to_bob

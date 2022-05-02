@@ -1,10 +1,13 @@
-import os
 import collections
-import bob.io.base
-import bob.bio.video
+import os
+
 import pkg_resources
-from bob.bio.video.test.dummy.database import DummyBioFile
+
+import bob.bio.video
+import bob.io.base
+
 from bob.bio.face.test.test_annotators import _assert_mtcnn
+from bob.bio.video.test.dummy.database import DummyBioFile
 
 
 class FailSucessAnnotator(bob.bio.base.annotator.Annotator):

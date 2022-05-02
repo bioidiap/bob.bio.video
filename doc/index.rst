@@ -13,7 +13,7 @@ In this package, tools to run video face recognition experiments are provided.
 
 For more detailed information about the structure of the ``bob.bio`` packages, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`.
 
-In the following, we provide more detailed information about the particularities of this package only. 
+In the following, we provide more detailed information about the particularities of this package only.
 
 Get Started (TLTR)
 ==================

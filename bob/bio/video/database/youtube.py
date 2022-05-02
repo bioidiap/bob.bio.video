@@ -1,14 +1,16 @@
-from bob.bio.base.pipelines.abstract_classes import Database
-from bob.pipelines import DelayedSample, SampleSet
-from bob.bio.video.utils import VideoLikeContainer, select_frames
-from functools import partial
 import copy
-from bob.extension import rc
-from bob.extension.download import get_file
-import bob.io.base
+import logging
 import os
 
-import logging
+from functools import partial
+
+import bob.io.base
+
+from bob.bio.base.pipelines.abstract_classes import Database
+from bob.bio.video.utils import VideoLikeContainer, select_frames
+from bob.extension import rc
+from bob.extension.download import get_file
+from bob.pipelines import DelayedSample, SampleSet
 
 logger = logging.getLogger(__name__)
 
@@ -138,8 +140,10 @@ class YoutubeDatabase(Database):
             ).readlines()
         ]
 
-        for l, n in zip(self.reference_id_to_subject_id, self.reference_id_to_sample):
-            key = int(l)
+        for ll, n in zip(
+            self.reference_id_to_subject_id, self.reference_id_to_sample
+        ):
+            key = int(ll)
             if key not in self.subject_id_files:
                 self.subject_id_files[key] = []
 
@@ -181,7 +185,9 @@ class YoutubeDatabase(Database):
 
         return VideoLikeContainer(data=data, indices=indices)
 
-    def _make_sample_set(self, reference_id, subject_id, sample_path, references=None):
+    def _make_sample_set(
+        self, reference_id, subject_id, sample_path, references=None
+    ):
 
         path = os.path.join(self.original_directory, sample_path)
 
@@ -189,7 +195,6 @@ class YoutubeDatabase(Database):
 
         # Delaying the annotation loading
         delayed_annotations = partial(self._annotations, path)
-        delayed_attributes = {"annotations": delayed_annotations}
         return SampleSet(
             key=str(reference_id),
             reference_id=str(reference_id),
@@ -223,7 +228,7 @@ class YoutubeDatabase(Database):
             )
 
         directory = os.path.dirname(path)
-        shot_id = os.path.basename(path)
+        # shot_id = os.path.basename(path)
 
         annotation_file = os.path.join(directory + self.annotation_extension)
 
@@ -266,7 +271,9 @@ class YoutubeDatabase(Database):
                 reference_id = e
                 suject_id = self.reference_id_to_subject_id[reference_id]
                 sample_path = self.reference_id_to_sample[reference_id]
-                sampleset = self._make_sample_set(reference_id, suject_id, sample_path)
+                sampleset = self._make_sample_set(
+                    reference_id, suject_id, sample_path
+                )
                 self.references_dict[self.protocol].append(sampleset)
 
         return self.references_dict[self.protocol]
@@ -315,9 +322,9 @@ class YoutubeDatabase(Database):
         return [f"fold{fold}" for fold in range(10)]
 
     def _check_protocol(self, protocol):
-        assert protocol in self.protocols(), "Unvalid protocol `{}` not in {}".format(
-            protocol, self.protocols()
-        )
+        assert (
+            protocol in self.protocols()
+        ), "Unvalid protocol `{}` not in {}".format(protocol, self.protocols())
 
     def _check_group(self, group):
         assert group in self.groups(), "Unvalid group `{}` not in {}".format(

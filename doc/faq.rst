@@ -22,7 +22,7 @@ Select the first frame only from every video
     >>> from bob.bio.video import select_frames
     >>> from functools import partial
     >>> frame_selector = partial(select_frames, selection_style="first", max_number_of_frames=1)
-    >>> frame_indices = [] # Some arbitrary list holding the frame indices    
+    >>> frame_indices = [] # Some arbitrary list holding the frame indices
     >>> selected_frames = frame_selector(frame_indices)
 
 
@@ -34,7 +34,7 @@ Select all frames
     >>> from bob.bio.video import select_frames
     >>> from functools import partial
     >>> frame_selector = partial(select_frames, selection_style="all", max_number_of_frames=None)
-    >>> frame_indices = [] # Some arbitrary list holding the frame indices    
+    >>> frame_indices = [] # Some arbitrary list holding the frame indices
     >>> selected_frames = frame_selector(frame_indices)
 
 
@@ -46,7 +46,7 @@ Select all frames, but with an upper-bound of 100 frames
     >>> from bob.bio.video import select_frames
     >>> from functools import partial
     >>> frame_selector = partial(select_frames, selection_style="all", max_number_of_frames=100)
-    >>> frame_indices = [] # Some arbitrary list holding the frame indices    
+    >>> frame_indices = [] # Some arbitrary list holding the frame indices
     >>> selected_frames = frame_selector(frame_indices)
 
 
@@ -58,7 +58,7 @@ Select 10 frames equally spread from the whole video
     >>> from bob.bio.video import select_frames
     >>> from functools import partial
     >>> frame_selector = partial(select_frames, selection_style="spread", max_number_of_frames=10)
-    >>> frame_indices = [] # Some arbitrary list holding the frame indices    
+    >>> frame_indices = [] # Some arbitrary list holding the frame indices
     >>> selected_frames = frame_selector(frame_indices)
 
 
@@ -84,6 +84,3 @@ Once this is saved into a python file (e.g. `my-dataset.py`), the PipelineSimple
 
 
  $ bob bio pipeline simple my-dataset.py [BASELINE] video-wrapper
-
-
-

@@ -2,13 +2,14 @@ import logging
 import pickle
 
 import h5py
+import imageio
 import numpy as np
+
 from bob.bio.base import selected_indices
+from bob.io.image import to_bob
+from bob.pipelines import wrap
 
 from .transformer import VideoWrapper
-from bob.pipelines import wrap
-import imageio
-from bob.io.image import to_bob
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,9 @@ def video_wrap_skpipeline(sk_pipeline):
         # 1. Unwrap the estimator
         # If the estimator is `Sample` wrapped takes `estimator.estimator`.
         transformer = (
-            estimator.estimator if hasattr(estimator, "estimator") else estimator
+            estimator.estimator
+            if hasattr(estimator, "estimator")
+            else estimator
         )
 
         # 2. do a video wrap
@@ -103,8 +106,10 @@ def select_frames(
 
     return indices
 
+
 def no_transform(x):
     return x
+
 
 class VideoAsArray:
     """A memory efficient class to load only select video frames.
@@ -141,9 +146,9 @@ class VideoAsArray:
         self.path = path
         self.reader = imageio.get_reader(path)
         self.dtype = np.uint8
-        shape = (self.reader.count_frames(), 3) + self.reader.get_meta_data()["size"][
-            ::-1
-        ]
+        shape = (self.reader.count_frames(), 3) + self.reader.get_meta_data()[
+            "size"
+        ][::-1]
         self.ndim = len(shape)
         self.selection_style = selection_style
 
@@ -185,14 +190,18 @@ class VideoAsArray:
 
         if isinstance(index, int):
             idx = self.indices[index]
-            return self.transform(np.asarray([to_bob(self.reader.get_data(idx))]))[0]
+            return self.transform(
+                np.asarray([to_bob(self.reader.get_data(idx))])
+            )[0]
 
         if not (
             isinstance(index, tuple)
             and len(index) == self.ndim
             and all(isinstance(idx, slice) for idx in index)
         ):
-            raise NotImplementedError(f"Indxing like {index} is not supported yet!")
+            raise NotImplementedError(
+                f"Indxing like {index} is not supported yet!"
+            )
 
         # dask.array.from_array sometimes requests empty arrays
         if all(i == slice(0, 0) for i in index):
@@ -218,7 +227,9 @@ class VideoAsArray:
         iterable = _frames_generator()
         # compute the final shape given self.shape and index
         # see https://stackoverflow.com/a/36188683/1286165
-        shape = [len(range(*idx.indices(dim))) for idx, dim in zip(index, self.shape)]
+        shape = [
+            len(range(*idx.indices(dim))) for idx, dim in zip(index, self.shape)
+        ]
         # field_dtype contains information about dtype and shape of each frame
         # numpy black magic: https://stackoverflow.com/a/12473478/1286165 allows
         # us to yield frame by frame in _frames_generator which greatly speeds
