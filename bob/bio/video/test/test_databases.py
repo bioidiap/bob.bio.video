@@ -1,12 +1,3 @@
-import pkg_resources
-
-from nose.plugins.skip import SkipTest
-
-import bob.bio.base
-
-from bob.bio.face.test.test_databases import _check_annotations
-
-
 def test_new_youtube():
     from bob.bio.video.database import YoutubeDatabase
 

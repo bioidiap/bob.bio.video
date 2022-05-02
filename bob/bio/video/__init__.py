@@ -1,12 +1,12 @@
 # isort: skip_file
-from .utils import (
+from .utils import (  # noqa: F401
     select_frames,
     VideoAsArray,
     VideoLikeContainer,
     video_wrap_skpipeline,
 )
-from . import annotator
-from . import transformer
+from . import annotator  # noqa: F401
+from . import transformer  # noqa: F401
 
 
 def get_config():

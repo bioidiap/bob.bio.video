@@ -140,10 +140,10 @@ class YoutubeDatabase(Database):
             ).readlines()
         ]
 
-        for l, n in zip(
+        for ll, n in zip(
             self.reference_id_to_subject_id, self.reference_id_to_sample
         ):
-            key = int(l)
+            key = int(ll)
             if key not in self.subject_id_files:
                 self.subject_id_files[key] = []
 
@@ -195,7 +195,6 @@ class YoutubeDatabase(Database):
 
         # Delaying the annotation loading
         delayed_annotations = partial(self._annotations, path)
-        delayed_attributes = {"annotations": delayed_annotations}
         return SampleSet(
             key=str(reference_id),
             reference_id=str(reference_id),
@@ -229,7 +228,7 @@ class YoutubeDatabase(Database):
             )
 
         directory = os.path.dirname(path)
-        shot_id = os.path.basename(path)
+        # shot_id = os.path.basename(path)
 
         annotation_file = os.path.join(directory + self.annotation_extension)
 
