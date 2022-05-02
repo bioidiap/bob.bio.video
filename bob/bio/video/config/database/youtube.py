@@ -1,5 +1,6 @@
-from bob.bio.video.database import YoutubeDatabase
 from functools import partial
+
+from bob.bio.video.database import YoutubeDatabase
 from bob.bio.video.utils import select_frames
 
 # Defining frame selection bit
@@ -19,4 +20,3 @@ frame_selector = partial(
 
 
 database = YoutubeDatabase(protocol="fold0", frame_selector=frame_selector)
-

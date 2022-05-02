@@ -1,3 +1,4 @@
+# isort: skip_file
 from .youtube import YoutubeDatabase
 from .database import VideoBioFile
 
