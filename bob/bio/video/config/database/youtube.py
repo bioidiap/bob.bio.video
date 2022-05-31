@@ -5,7 +5,7 @@ from bob.bio.video.utils import select_frames
 
 # Defining frame selection bit
 # If you want to customize this, please, create a new config file and do
-# bob bio pipelines vanilla-biometrics `my-new-config-file.py` `baseline`......
+# bob bio pipeline simple `my-new-config-file.py` `baseline`......
 selection_style = "first"
 max_number_of_frames = None
 step_size = None

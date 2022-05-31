@@ -118,7 +118,7 @@ class YoutubeDatabase(Database):
         super().__init__(
             name="youtube",
             protocol=protocol,
-            allow_scoring_with_all_biometric_references=False,
+            score_all_vs_all=False,
             annotation_type=annotation_type,
             fixed_positions=None,
             memory_demanding=True,
