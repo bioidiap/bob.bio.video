@@ -252,6 +252,9 @@ class VideoLikeContainer:
         self.data = data
         self.indices = indices
 
+    def __repr__(self) -> str:
+        return f"VideoLikeContainer: {self.data!r} {self.indices!r}"
+
     @property
     def dtype(self):
         return self.data.dtype

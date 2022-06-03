@@ -16,7 +16,7 @@ def normalize_annotations(annotations, validator, max_age=-1):
 
     Parameters
     ----------
-    annotations : collections.OrderedDict
+    annotations : OrderedDict
         A dict of dict where the keys to the first dict are frame indices as
         strings (starting from 0). The inside dicts contain annotations for that
         frame. The dictionary needs to be an ordered dict in order for this to
@@ -90,7 +90,7 @@ class Base(bob.bio.base.annotator.Annotator):
 
         Returns
         -------
-        collections.OrderedDict
+        OrderedDict
             A dictionary where its key is the frame id as a string and its value
             is a dictionary that are the annotations for that frame.
 

@@ -39,7 +39,7 @@ class VideoWrapper(TransformerMixin, BaseEstimator):
             kw = {}
             if kwargs:
                 kw = {k: v[i] for k, v in kwargs.items()}
-            if "annotations" in kw:
+            if "annotations" in kw and kw["annotations"] is not None:
                 kw["annotations"] = [
                     kw["annotations"].get(
                         index, kw["annotations"].get(str(index))
@@ -54,6 +54,8 @@ class VideoWrapper(TransformerMixin, BaseEstimator):
 
             # remove invalid kw args as well
             for k, v in kw.items():
+                if v is None:
+                    continue
                 kw[k] = [vv for j, vv in enumerate(v) if j not in invalid_ids]
 
             # Process only the valid samples
