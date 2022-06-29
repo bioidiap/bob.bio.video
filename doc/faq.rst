@@ -80,7 +80,7 @@ The example below shows how to customize it for the YouTube Video Faces dataset 
     >>> database = YoutubeDatabase(protocol="fold0", frame_selector=frame_selector)
 
 
-Once this is saved into a python file (e.g. `my-dataset.py`), the PipelineSimple (:doc:`pipeline_simple_intro`) can be triggered as::
+Once this is saved into a python file (e.g. `my-dataset.py`), the PipelineSimple (:ref:`bob.bio.base.pipeline_simple_intro`) can be triggered as::
 
 
  $ bob bio pipeline simple my-dataset.py [BASELINE] video-wrapper
