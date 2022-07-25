@@ -35,7 +35,7 @@ class YoutubeDatabase(Database):
     In this interface we implement the 10 original protocols of the `YouTube Faces` database ('fold1', 'fold2', 'fold3', 'fold4', 'fold5', 'fold6', 'fold7', 'fold8', 'fold9', 'fold10')
 
 
-    The code below allows you to fetch the galery and probes of the "fold0" protocol.
+    The code below allows you to fetch the gallery and probes of the "fold0" protocol.
 
     .. code-block:: python
 
@@ -86,7 +86,7 @@ class YoutubeDatabase(Database):
         original_directory = original_directory or ""
         if not os.path.exists(original_directory):
             logger.warning(
-                "Invalid or non existant `original_directory`: f{original_directory}."
+                "Invalid or non existent `original_directory`: f{original_directory}."
                 "Please, do `bob config set bob.bio.video.youtube.directory PATH` to set the Youtube data directory."
             )
 
@@ -204,7 +204,6 @@ class YoutubeDatabase(Database):
                 DelayedSample(
                     key=str(sample_path),
                     load=partial(self._load_video_from_path, path),
-                    annotations=None,
                     delayed_attributes={"annotations": delayed_annotations},
                 )
             ],
@@ -269,10 +268,10 @@ class YoutubeDatabase(Database):
 
             for i, (e, _) in enumerate(zip(pairs[0], pairs[1])):
                 reference_id = e
-                suject_id = self.reference_id_to_subject_id[reference_id]
+                subject_id = self.reference_id_to_subject_id[reference_id]
                 sample_path = self.reference_id_to_sample[reference_id]
                 sampleset = self._make_sample_set(
-                    reference_id, suject_id, sample_path
+                    reference_id, subject_id, sample_path
                 )
                 self.references_dict[self.protocol].append(sampleset)
 
@@ -294,11 +293,11 @@ class YoutubeDatabase(Database):
             # Now assembling the samplesets
             for _, p in zip(pairs[0], pairs[1]):
                 reference_id = p
-                suject_id = self.reference_id_to_subject_id[reference_id]
+                subject_id = self.reference_id_to_subject_id[reference_id]
                 sample_path = self.reference_id_to_sample[reference_id]
                 references = copy.deepcopy(probe_to_reference_id_dict[p])
                 sampleset = self._make_sample_set(
-                    reference_id, suject_id, sample_path, references
+                    reference_id, subject_id, sample_path, references
                 )
                 self.probes_dict[self.protocol].append(sampleset)
 
@@ -324,9 +323,9 @@ class YoutubeDatabase(Database):
     def _check_protocol(self, protocol):
         assert (
             protocol in self.protocols()
-        ), "Unvalid protocol `{}` not in {}".format(protocol, self.protocols())
+        ), "Invalid protocol `{}` not in {}".format(protocol, self.protocols())
 
     def _check_group(self, group):
-        assert group in self.groups(), "Unvalid group `{}` not in {}".format(
+        assert group in self.groups(), "Invalid group `{}` not in {}".format(
             group, self.groups()
         )
