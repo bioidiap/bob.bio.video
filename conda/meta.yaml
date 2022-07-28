@@ -6,7 +6,6 @@ package:
   version: {{ environ.get('BOB_PACKAGE_VERSION', '0.0.1') }}
 
 build:
-  skip: True  # [arm64]
   number: {{ environ.get('BOB_BUILD_NUMBER', 0) }}
   run_exports:
     - {{ pin_subpackage(name) }}
@@ -30,7 +29,7 @@ requirements:
     - bob.extension
     - bob.io.base
     - bob.bio.base
-    - bob.bio.face  # [not arm64]
+    - bob.bio.face
   run:
     - python
     - setuptools
