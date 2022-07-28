@@ -39,7 +39,10 @@ def test_video_as_array():
     assert len(video) == 3, len(video)
     assert video.indices == [13, 41, 69], video.indices
     assert video.shape == (3, 3, 480, 640), video.shape
-    np.testing.assert_equal(video[-1][:, 0, 0], np.array([75, 100, 97]))
+    # arm64 ffmpeg loads videos with a difference of pixel value of +/-1
+    np.testing.assert_allclose(
+        video[-1][:, 0, 0], np.array([75, 100, 97]), atol=1
+    )
 
     # pickle video and unpickle to see if it works
     with tempfile.NamedTemporaryFile(suffix=".pkl") as f:
