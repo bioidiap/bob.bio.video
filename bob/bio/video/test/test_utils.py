@@ -22,7 +22,9 @@ def test_video_as_array():
     assert video.indices == range(83), video.indices
     assert video.shape == (83, 3, 480, 640), video.shape
     # arm64 ffmpeg loads videos with a difference of pixel value of +/-1
-    np.testing.assert_allclose(video[0][:, 0, 0], np.array([78, 103, 100]), atol=1)
+    np.testing.assert_allclose(
+        video[0][:, 0, 0], np.array([78, 103, 100]), atol=1
+    )
 
     video_slice = video[1:2, 1:-1, 1:-1, 1:-1]
     assert video_slice.shape == (1, 1, 478, 638), video_slice.shape
