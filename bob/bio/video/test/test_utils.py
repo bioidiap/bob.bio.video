@@ -21,7 +21,8 @@ def test_video_as_array():
     assert len(video) == 83, len(video)
     assert video.indices == range(83), video.indices
     assert video.shape == (83, 3, 480, 640), video.shape
-    # np.testing.assert_equal(video[0][:, 0, 0], np.array([78, 103, 100]))
+    # arm64 ffmpeg loads videos with a difference of pixel value of +/-1
+    np.testing.assert_allclose(video[0][:, 0, 0], np.array([78, 103, 100]), atol=1)
 
     video_slice = video[1:2, 1:-1, 1:-1, 1:-1]
     assert video_slice.shape == (1, 1, 478, 638), video_slice.shape
@@ -87,7 +88,8 @@ def test_video_like_container():
 
     loaded_container = bob.bio.video.VideoLikeContainer.load(container_path)
     np.testing.assert_allclose(loaded_container.indices, container.indices)
-    np.testing.assert_allclose(loaded_container.data, container.data)
+    # arm64 ffmpeg loads videos with a difference of pixel value of +/-1
+    np.testing.assert_allclose(loaded_container.data, container.data, atol=1)
     assert container == loaded_container
 
     # test saving and loading None arrays
