@@ -93,9 +93,10 @@ def test_video_like_container():
 
     loaded_container = bob.bio.video.VideoLikeContainer.load(container_path)
     np.testing.assert_allclose(loaded_container.indices, container.indices)
-    # arm64 ffmpeg loads videos with a difference of pixel value of +/-1
-    np.testing.assert_allclose(loaded_container.data, container.data, atol=1)
-    assert container == loaded_container
+    # ffmpeg loads videos with a difference of pixel value of +/-5 on arm64
+    np.testing.assert_allclose(
+        loaded_container.data, np.array(container, dtype=int), atol=5
+    )
 
     # test saving and loading None arrays
     with tempfile.NamedTemporaryFile(suffix=".pkl") as f:
