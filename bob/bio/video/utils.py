@@ -200,7 +200,7 @@ class VideoAsArray:
             and all(isinstance(idx, slice) for idx in index)
         ):
             raise NotImplementedError(
-                f"Indxing like {index} is not supported yet!"
+                f"Indexing like {index} is not supported yet!"
             )
 
         # dask.array.from_array sometimes requests empty arrays

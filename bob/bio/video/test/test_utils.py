@@ -1,10 +1,8 @@
 import pickle
-import platform
 import tempfile
 import time
 
 import imageio
-import nose
 import numpy as np
 
 import bob.bio.video
@@ -23,9 +21,10 @@ def test_video_as_array():
     assert len(video) == 83, len(video)
     assert video.indices == range(83), video.indices
     assert video.shape == (83, 3, 480, 640), video.shape
-    if platform.machine() == "arm64" and platform.system() == "Darwin":
-        raise nose.SkipTest("Skipping test on arm64 macos")
-    np.testing.assert_equal(video[0][:, 0, 0], np.array([78, 103, 100]))
+    # arm64 ffmpeg loads videos with a difference of pixel value of +/-1
+    np.testing.assert_allclose(
+        video[0][:, 0, 0], np.array([78, 103, 100]), atol=1
+    )
 
     video_slice = video[1:2, 1:-1, 1:-1, 1:-1]
     assert video_slice.shape == (1, 1, 478, 638), video_slice.shape
@@ -40,7 +39,10 @@ def test_video_as_array():
     assert len(video) == 3, len(video)
     assert video.indices == [13, 41, 69], video.indices
     assert video.shape == (3, 3, 480, 640), video.shape
-    np.testing.assert_equal(video[-1][:, 0, 0], np.array([75, 100, 97]))
+    # arm64 ffmpeg loads videos with a difference of pixel value of +/-1
+    np.testing.assert_allclose(
+        video[-1][:, 0, 0], np.array([75, 100, 97]), atol=1
+    )
 
     # pickle video and unpickle to see if it works
     with tempfile.NamedTemporaryFile(suffix=".pkl") as f:
@@ -90,11 +92,11 @@ def test_video_like_container():
         container.save(container_path)
 
     loaded_container = bob.bio.video.VideoLikeContainer.load(container_path)
-    if platform.machine() == "arm64" and platform.system() == "Darwin":
-        raise nose.SkipTest("Skipping test on arm64 macos")
     np.testing.assert_allclose(loaded_container.indices, container.indices)
-    np.testing.assert_allclose(loaded_container.data, container.data)
-    assert container == loaded_container
+    # ffmpeg loads videos with a difference of pixel value of +/-5 on arm64
+    np.testing.assert_allclose(
+        loaded_container.data, np.array(container, dtype=int), atol=5
+    )
 
     # test saving and loading None arrays
     with tempfile.NamedTemporaryFile(suffix=".pkl") as f:
