@@ -86,16 +86,16 @@ class YoutubeDatabase(Database):
         original_directory = original_directory or ""
         if not os.path.exists(original_directory):
             logger.warning(
-                "Invalid or non existent `original_directory`: f{original_directory}."
+                f"Invalid or non existent `original_directory`: {original_directory}."
                 "Please, do `bob config set bob.bio.video.youtube.directory PATH` to set the Youtube data directory."
             )
 
         urls = YoutubeDatabase.urls()
         cache_subdir = os.path.join("datasets", "youtube_protocols")
         self.filename = get_file(
-            "youtube_protocols-6962cd2e.tar.gz",
+            "youtube.tar.gz",
             urls,
-            file_hash="8a4792872ff30b37eab7f25790b0b10d",
+            file_hash="51c1fb2a",
             extract=True,
             cache_subdir=cache_subdir,
         )
@@ -120,7 +120,7 @@ class YoutubeDatabase(Database):
             protocol=protocol,
             score_all_vs_all=False,
             annotation_type=annotation_type,
-            fixed_positions=None,
+            fixed_positions=fixed_positions,
             memory_demanding=True,
         )
 
@@ -312,13 +312,9 @@ class YoutubeDatabase(Database):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/youtube_protocols-6962cd2e.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/youtube_protocols-6962cd2e.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
         ]
-
-    @staticmethod
-    def protocols():
-        return [f"fold{fold}" for fold in range(10)]
 
     def _check_protocol(self, protocol):
         assert (
