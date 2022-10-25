@@ -15,7 +15,7 @@ from bob.pipelines import DelayedSample, SampleSet
 logger = logging.getLogger(__name__)
 
 
-class YoutubeDatabase(Database):
+class YoutubeDatabase(Database):  # TODO convert to a CSVDatabase
     """
     This package contains the access API and descriptions for the `YouTube Faces` database.
     It only contains the Bob accessor methods to use the DB directly from python, with our certified protocols.
@@ -315,6 +315,10 @@ class YoutubeDatabase(Database):
             "https://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
             "http://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
         ]
+
+    @staticmethod
+    def protocols():
+        return [f"fold{fold}" for fold in range(10)]
 
     def _check_protocol(self, protocol):
         assert (
