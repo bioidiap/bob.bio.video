@@ -69,7 +69,7 @@
     readme = {file = "README.rst"}
 
 [project.entry-points."bob.pipelines.bob.bio.database"]
-    dummy-video       = "bob.bio.video.test.dummy.database:database"  # for test purposes only
+    dummy-video       = "tests.dummy.database:database"  # for test purposes only
     youtube             =" bob.bio.video.config.database.youtube:database"
 
 [project.entry-points."bob.pipelines.bob.bio.config"]

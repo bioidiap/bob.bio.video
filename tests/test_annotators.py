@@ -3,10 +3,12 @@ import os
 
 import pkg_resources
 
+from dummy.database import DummyBioFile
+
 import bob.bio.video
 import bob.io.base
 
-from bob.bio.video.test.dummy.database import DummyBioFile
+from bob.bio.face.test.test_annotators import _assert_mtcnn
 
 from .test_annotators import _assert_mtcnn
 
@@ -60,7 +62,7 @@ def test_wrapper():
 
 
 def _get_test_video():
-    original_path = pkg_resources.resource_filename("bob.bio.video.test", "")
+    original_path = pkg_resources.resource_filename("__name__", "")
     # here I am using 3 frames to test normalize but in real applications this
     # should not be done.
     video_object = bob.bio.video.database.VideoBioFile(
