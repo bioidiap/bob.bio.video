@@ -58,7 +58,6 @@
         "pytest-cov",
         "coverage",
         "dask",
-        "tensorflow"
         ]
 
 [tool.setuptools]
