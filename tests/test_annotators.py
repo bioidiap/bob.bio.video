@@ -3,12 +3,11 @@ import os
 
 import pkg_resources
 
-from dummy.database import DummyBioFile
-
 import bob.bio.video
 import bob.io.base
 
 from bob.bio.face.test.test_annotators import _assert_mtcnn
+from tests.dummy.database import DummyBioFile
 
 from .test_annotators import _assert_mtcnn
 

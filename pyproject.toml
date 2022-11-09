@@ -67,11 +67,11 @@
 [tool.setuptools.dynamic]
     readme = {file = "README.rst"}
 
-[project.entry-points."bob.pipelines.bob.bio.database"]
+[project.entry-points."bob.bio.database"]
     dummy-video       = "tests.dummy.database:database"  # for test purposes only
     youtube             =" bob.bio.video.config.database.youtube:database"
 
-[project.entry-points."bob.pipelines.bob.bio.config"]
+[project.entry-points."bob.bio.config"]
     youtube           = "bob.bio.video.config.database.youtube"
     video-wrapper     = "bob.bio.video.config.video_wrapper"
 
