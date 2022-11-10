@@ -29,12 +29,12 @@
         "numpy",
         "h5py",
         "scikit-learn",
-        "bob.extension",
-        "bob.io.base",
+        "bob.extension==7.0.3",
+        "bob.io.base==5.0.2",
+        "bob.bio.base==7.1.0",
+        "bob.bio.face==7.1.2",
         "imageio",
         "imageio-ffmpeg",
-        "bob.bio.base",
-        "bob.bio.face",
     ]
 
 [project.urls]
