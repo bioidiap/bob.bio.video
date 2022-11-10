@@ -16,7 +16,7 @@ regenerate_refs = False
 
 
 def test_video_as_array():
-    path = datafile("testvideo.avi", "__name__")
+    path = datafile("testvideo.avi", __name__)
 
     video = bob.bio.video.VideoAsArray(path, selection_style="all")
     assert len(video) == 83, len(video)
@@ -61,7 +61,7 @@ def test_video_as_array():
 def test_video_as_array_vs_dask():
     import dask
 
-    path = datafile("testvideo.avi", "__name__")
+    path = datafile("testvideo.avi", __name__)
     start = time.time()
     video = bob.bio.video.VideoAsArray(path, selection_style="all")
     video = dask.array.from_array(video, (20, 1, 480, 640))
@@ -80,7 +80,7 @@ def test_video_as_array_vs_dask():
 
 
 def test_video_like_container():
-    path = datafile("testvideo.avi", "__name__")
+    path = datafile("testvideo.avi", __name__)
 
     video = bob.bio.video.VideoAsArray(
         path, selection_style="spread", max_number_of_frames=3

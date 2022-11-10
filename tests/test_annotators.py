@@ -61,7 +61,7 @@ def test_wrapper():
 
 
 def _get_test_video():
-    original_path = pkg_resources.resource_filename("__name__", "")
+    original_path = pkg_resources.resource_filename(__name__, "")
     # here I am using 3 frames to test normalize but in real applications this
     # should not be done.
     video_object = bob.bio.video.database.VideoBioFile(
