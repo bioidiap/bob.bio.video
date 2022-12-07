@@ -33,7 +33,7 @@ class FailSucessAnnotator(bob.bio.base.annotator.Annotator):
 
 def test_wrapper():
 
-    original_path = pkg_resources.resource_filename(__name__, "")
+    original_path = pkg_resources.resource_filename("bob.bio.face.test", "")
     image_files = DummyBioFile(
         client_id=1,
         file_id=1,
