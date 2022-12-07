@@ -87,7 +87,7 @@ def test_video_like_container():
     )
     container = bob.bio.video.VideoLikeContainer(video, video.indices)
 
-    container_path = datafile("video_like.hdf5", "__name___")
+    container_path = datafile("video_like.hdf5", __name__)
 
     if regenerate_refs:
         container.save(container_path)
