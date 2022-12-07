@@ -36,6 +36,7 @@
         "bob.pipelines==3.0.3",
         "imageio",
         "imageio-ffmpeg",
+        "tensorflow==2.9.1",
     ]
 
 [project.urls]
