@@ -36,7 +36,6 @@
         "bob.pipelines==3.0.3",
         "imageio",
         "imageio-ffmpeg",
-        "tensorflow",
     ]
 
 [project.urls]
@@ -54,12 +53,15 @@
         "sphinxcontrib-programoutput",
         "matplotlib",
         "dask-ml",
+        "tensorflow",
         ]
     test = [
         "pytest",
         "pytest-cov",
         "coverage",
         "dask",
+        "tensorflow ; sys_platform == 'linux'",
+        "tensorflow-macos ; sys_platform != 'linux'",
         ]
 
 [tool.setuptools]
