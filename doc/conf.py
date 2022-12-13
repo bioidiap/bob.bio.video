@@ -234,12 +234,7 @@ autodoc_default_options = {
 
 auto_intersphinx_packages = [
     ("python", "3"),
-    "setuptools",
     "numpy",
-    "h5py",
-    "scikit-learn",
-    "imageio",
-    "imageio-ffmpeg",
     "bob.bio.base",
     "bob.bio.face",
 ]
