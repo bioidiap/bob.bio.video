@@ -15,7 +15,7 @@ from bob.pipelines import DelayedSample, SampleSet
 logger = logging.getLogger(__name__)
 
 
-class YoutubeDatabase(Database):
+class YoutubeDatabase(Database):  # TODO convert to a CSVDatabase
     """
     This package contains the access API and descriptions for the `YouTube Faces` database.
     It only contains the Bob accessor methods to use the DB directly from python, with our certified protocols.
@@ -86,16 +86,16 @@ class YoutubeDatabase(Database):
         original_directory = original_directory or ""
         if not os.path.exists(original_directory):
             logger.warning(
-                "Invalid or non existent `original_directory`: f{original_directory}."
+                f"Invalid or non existent `original_directory`: {original_directory}."
                 "Please, do `bob config set bob.bio.video.youtube.directory PATH` to set the Youtube data directory."
             )
 
         urls = YoutubeDatabase.urls()
         cache_subdir = os.path.join("datasets", "youtube_protocols")
         self.filename = get_file(
-            "youtube_protocols-6962cd2e.tar.gz",
+            "youtube.tar.gz",
             urls,
-            file_hash="8a4792872ff30b37eab7f25790b0b10d",
+            file_hash="51c1fb2a",
             extract=True,
             cache_subdir=cache_subdir,
         )
@@ -107,8 +107,8 @@ class YoutubeDatabase(Database):
         # Dict that holds a `subject_id` as a key and has
         # filenames as values
         self.subject_id_files = {}
-        self.reference_id_to_subject_id = None
-        self.reference_id_to_sample = None
+        self.template_id_to_subject_id = None
+        self.template_id_to_sample = None
         self.load_file_client_id()
         self.original_directory = original_directory
         self.extension = extension
@@ -120,7 +120,7 @@ class YoutubeDatabase(Database):
             protocol=protocol,
             score_all_vs_all=False,
             annotation_type=annotation_type,
-            fixed_positions=None,
+            fixed_positions=fixed_positions,
             memory_demanding=True,
         )
 
@@ -130,10 +130,10 @@ class YoutubeDatabase(Database):
 
         # List containing the client ID
         # Each element of this file matches a line in Youtube_names.txt
-        self.reference_id_to_subject_id = bob.io.base.load(
+        self.template_id_to_subject_id = bob.io.base.load(
             os.path.join(self.protocol_path, "Youtube_labels.mat.hdf5")
         )[0].astype("int")
-        self.reference_id_to_sample = [
+        self.template_id_to_sample = [
             x.rstrip("\n")
             for x in open(
                 os.path.join(self.protocol_path, "Youtube_names.txt")
@@ -141,7 +141,7 @@ class YoutubeDatabase(Database):
         ]
 
         for ll, n in zip(
-            self.reference_id_to_subject_id, self.reference_id_to_sample
+            self.template_id_to_subject_id, self.template_id_to_sample
         ):
             key = int(ll)
             if key not in self.subject_id_files:
@@ -186,7 +186,7 @@ class YoutubeDatabase(Database):
         return VideoLikeContainer(data=data, indices=indices)
 
     def _make_sample_set(
-        self, reference_id, subject_id, sample_path, references=None
+        self, template_id, subject_id, sample_path, references=None
     ):
 
         path = os.path.join(self.original_directory, sample_path)
@@ -196,8 +196,8 @@ class YoutubeDatabase(Database):
         # Delaying the annotation loading
         delayed_annotations = partial(self._annotations, path)
         return SampleSet(
-            key=str(reference_id),
-            reference_id=str(reference_id),
+            key=str(template_id),
+            template_id=str(template_id),
             subject_id=str(subject_id),
             **kwargs,
             samples=[
@@ -267,11 +267,11 @@ class YoutubeDatabase(Database):
             pairs = self._load_pairs()
 
             for i, (e, _) in enumerate(zip(pairs[0], pairs[1])):
-                reference_id = e
-                subject_id = self.reference_id_to_subject_id[reference_id]
-                sample_path = self.reference_id_to_sample[reference_id]
+                template_id = e
+                suject_id = self.template_id_to_subject_id[template_id]
+                sample_path = self.template_id_to_sample[template_id]
                 sampleset = self._make_sample_set(
-                    reference_id, subject_id, sample_path
+                    template_id, suject_id, sample_path
                 )
                 self.references_dict[self.protocol].append(sampleset)
 
@@ -284,20 +284,20 @@ class YoutubeDatabase(Database):
             pairs = self._load_pairs()
 
             # Computing reference list
-            probe_to_reference_id_dict = dict()
+            probe_to_template_id_dict = dict()
             for e, p in zip(pairs[0], pairs[1]):
-                if p not in probe_to_reference_id_dict:
-                    probe_to_reference_id_dict[p] = []
-                probe_to_reference_id_dict[p].append(str(e))
+                if p not in probe_to_template_id_dict:
+                    probe_to_template_id_dict[p] = []
+                probe_to_template_id_dict[p].append(str(e))
 
             # Now assembling the samplesets
             for _, p in zip(pairs[0], pairs[1]):
-                reference_id = p
-                subject_id = self.reference_id_to_subject_id[reference_id]
-                sample_path = self.reference_id_to_sample[reference_id]
-                references = copy.deepcopy(probe_to_reference_id_dict[p])
+                template_id = p
+                suject_id = self.template_id_to_subject_id[template_id]
+                sample_path = self.template_id_to_sample[template_id]
+                references = copy.deepcopy(probe_to_template_id_dict[p])
                 sampleset = self._make_sample_set(
-                    reference_id, subject_id, sample_path, references
+                    template_id, suject_id, sample_path, references
                 )
                 self.probes_dict[self.protocol].append(sampleset)
 
@@ -312,8 +312,8 @@ class YoutubeDatabase(Database):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/youtube_protocols-6962cd2e.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/youtube_protocols-6962cd2e.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
         ]
 
     @staticmethod

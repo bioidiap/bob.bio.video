@@ -6,8 +6,9 @@ import pkg_resources
 import bob.bio.video
 import bob.io.base
 
-from bob.bio.face.test.test_annotators import _assert_mtcnn
 from bob.bio.video.test.dummy.database import DummyBioFile
+
+from .test_annotators import _assert_mtcnn
 
 
 class FailSucessAnnotator(bob.bio.base.annotator.Annotator):
@@ -31,7 +32,7 @@ class FailSucessAnnotator(bob.bio.base.annotator.Annotator):
 
 def test_wrapper():
 
-    original_path = pkg_resources.resource_filename("bob.bio.face.test", "")
+    original_path = pkg_resources.resource_filename(__name__, "")
     image_files = DummyBioFile(
         client_id=1,
         file_id=1,
