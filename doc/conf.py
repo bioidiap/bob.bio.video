@@ -238,7 +238,6 @@ auto_intersphinx_packages = [
     "numpy",
     "h5py",
     "scikit-learn",
-    "bob.io.base",
     "imageio",
     "imageio-ffmpeg",
     "bob.bio.base",
