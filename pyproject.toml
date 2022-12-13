@@ -32,7 +32,7 @@
         "bob.extension",
         "bob.io.base==5.0.2",
         "bob.bio.base",
-        "bob.bio.face==7.1.2",
+        "bob.bio.face",
         "bob.pipelines==3.0.3",
         "imageio",
         "imageio-ffmpeg",
