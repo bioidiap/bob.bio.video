@@ -1,4 +1,4 @@
 include:
   - project: bob/dev-profile
-    ref: libGL_installation
+    ref: main
     file: gitlab/python.yml
