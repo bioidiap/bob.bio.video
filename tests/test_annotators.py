@@ -6,7 +6,7 @@ import pkg_resources
 import bob.bio.video
 import bob.io.base
 
-from bob.bio.face.test.test_annotators import _assert_mtcnn
+from bob.bio.face.tests.test_annotators import _assert_mtcnn
 from tests.dummy.database import DummyBioFile
 
 
