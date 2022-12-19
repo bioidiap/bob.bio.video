@@ -7,7 +7,7 @@ import numpy as np
 
 import bob.bio.video
 
-from bob.bio.video.utils import is_library_available
+from bob.bio.base.utils import is_library_available
 from bob.io.base.testing_utils import datafile
 from bob.io.image import to_bob
 
