@@ -9,8 +9,6 @@ import bob.io.base
 from bob.bio.face.test.test_annotators import _assert_mtcnn
 from tests.dummy.database import DummyBioFile
 
-from .test_annotators import _assert_mtcnn
-
 
 class FailSucessAnnotator(bob.bio.base.annotator.Annotator):
     """An annotator that fails for every second time it is called."""
