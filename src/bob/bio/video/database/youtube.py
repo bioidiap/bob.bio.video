@@ -6,7 +6,7 @@ from functools import partial
 
 import bob.io.base
 
-from bob.bio.base.pipelines.abstract_classes import Database
+from bob.bio.base.database import CSVDatabase
 from bob.bio.video.utils import VideoLikeContainer, select_frames
 from bob.extension import rc
 from bob.extension.download import get_file
@@ -15,7 +15,8 @@ from bob.pipelines import DelayedSample, SampleSet
 logger = logging.getLogger(__name__)
 
 
-class YoutubeDatabase(Database):  # TODO convert to a CSVDatabase
+class YoutubeDatabase(CSVDatabase):
+
     """
     This package contains the access API and descriptions for the `YouTube Faces` database.
     It only contains the Bob accessor methods to use the DB directly from python, with our certified protocols.
@@ -70,6 +71,15 @@ class YoutubeDatabase(Database):  # TODO convert to a CSVDatabase
 
     """
 
+    name = "youtube"
+    category = "video"
+    dataset_protocols_name = "youtube.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
+    ]
+    dataset_protocols_hash = "51c1fb2a"
+
     def __init__(
         self,
         protocol,
@@ -116,9 +126,8 @@ class YoutubeDatabase(Database):  # TODO convert to a CSVDatabase
         self.frame_selector = frame_selector
 
         super().__init__(
-            name="youtube",
+            name=self.name,
             protocol=protocol,
-            score_all_vs_all=False,
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
             memory_demanding=True,
@@ -308,17 +317,6 @@ class YoutubeDatabase(Database):  # TODO convert to a CSVDatabase
 
     def groups(self):
         return ["dev"]
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/video/youtube-51c1fb2a.tar.gz",
-        ]
-
-    @staticmethod
-    def protocols():
-        return [f"fold{fold}" for fold in range(10)]
 
     def _check_protocol(self, protocol):
         assert (
