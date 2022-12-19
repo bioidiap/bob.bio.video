@@ -7,10 +7,9 @@ import numpy as np
 
 import bob.bio.video
 
+from bob.bio.video.utils import is_library_available
 from bob.io.base.testing_utils import datafile
 from bob.io.image import to_bob
-
-from .utils import is_library_available
 
 regenerate_refs = False
 
