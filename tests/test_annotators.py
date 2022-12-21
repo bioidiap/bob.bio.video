@@ -1,12 +1,12 @@
 import collections
 import os
 
+import numpy
 import pkg_resources
 
 import bob.bio.video
 import bob.io.base
 
-from bob.bio.face.tests.test_annotators import _assert_mtcnn
 from tests.dummy.database import DummyBioFile
 
 
@@ -106,3 +106,15 @@ def test_failsafe_video():
         assert "topleft" in annotations, annot
         assert annotations["topleft"] == (0, 0), annot
         assert annotations["bottomright"] == (64, 64), annot
+
+
+def _assert_mtcnn(annot):
+    """
+    Verifies that the MTCNN annotations are correct for ``faceimage.jpg``
+    """
+    assert type(annot) is dict, annot
+    assert [int(x) for x in annot["topleft"]] == [68, 76], annot
+    assert [int(x) for x in annot["bottomright"]] == [344, 274], annot
+    assert [int(x) for x in annot["reye"]] == [180, 129], annot
+    assert [int(x) for x in annot["leye"]] == [175, 220], annot
+    assert numpy.allclose(annot["quality"], 0.9998975), annot
