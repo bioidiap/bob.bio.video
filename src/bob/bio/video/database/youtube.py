@@ -98,7 +98,6 @@ class YoutubeDatabase(CSVDatabase):
         self.subject_id_files = {}
         self.template_id_to_subject_id = None
         self.template_id_to_sample = None
-        self.load_file_client_id()
         self.original_directory = original_directory
         self.extension = extension
         self.annotation_extension = annotation_extension
