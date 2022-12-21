@@ -7,5 +7,5 @@ def test_new_youtube():
         references = database.references()
         probes = database.probes()
 
-        assert len(references) == 500
-        assert len(probes) == 500
+        assert len(references) == 244
+        assert len(probes) == 238
