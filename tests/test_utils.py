@@ -7,16 +7,15 @@ import numpy as np
 
 import bob.bio.video
 
+from bob.bio.video.utils import is_library_available
 from bob.io.base.testing_utils import datafile
 from bob.io.image import to_bob
-
-from .utils import is_library_available
 
 regenerate_refs = False
 
 
 def test_video_as_array():
-    path = datafile("testvideo.avi", "bob.bio.video.test")
+    path = datafile("testvideo.avi", __name__)
 
     video = bob.bio.video.VideoAsArray(path, selection_style="all")
     assert len(video) == 83, len(video)
@@ -61,7 +60,7 @@ def test_video_as_array():
 def test_video_as_array_vs_dask():
     import dask
 
-    path = datafile("testvideo.avi", "bob.bio.video.test")
+    path = datafile("testvideo.avi", __name__)
     start = time.time()
     video = bob.bio.video.VideoAsArray(path, selection_style="all")
     video = dask.array.from_array(video, (20, 1, 480, 640))
@@ -80,14 +79,14 @@ def test_video_as_array_vs_dask():
 
 
 def test_video_like_container():
-    path = datafile("testvideo.avi", "bob.bio.video.test")
+    path = datafile("testvideo.avi", __name__)
 
     video = bob.bio.video.VideoAsArray(
         path, selection_style="spread", max_number_of_frames=3
     )
     container = bob.bio.video.VideoLikeContainer(video, video.indices)
 
-    container_path = datafile("video_like.hdf5", "bob.bio.video.test")
+    container_path = datafile("video_like.hdf5", __name__)
 
     if regenerate_refs:
         container.save(container_path)

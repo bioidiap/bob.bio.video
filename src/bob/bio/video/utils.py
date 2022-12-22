@@ -1,5 +1,8 @@
+import functools
+import importlib
 import logging
 import pickle
+import unittest
 
 import h5py
 import imageio
@@ -109,6 +112,27 @@ def select_frames(
 
 def no_transform(x):
     return x
+
+
+def is_library_available(library):
+    """Decorator to check if the mxnet is present, before running the test"""
+
+    def _is_library_available(function):
+        @functools.wraps(function)
+        def wrapper(*args, **kwargs):
+            try:
+                importlib.import_module(library)
+
+                return function(*args, **kwargs)
+            except ImportError as e:
+                # unittest.SkipTest is compatible with both nose and pytest
+                raise unittest.SkipTest(
+                    f"Skipping test since `{library}` is not available: %s" % e
+                )
+
+        return wrapper
+
+    return _is_library_available
 
 
 class VideoAsArray:
