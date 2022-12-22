@@ -2,8 +2,8 @@ import os
 
 import bob.io.base
 
+from bob.bio.base.config.dummy.database import database as ATNT_DATABASE
 from bob.bio.base.database import ZTBioDatabase
-from bob.bio.base.test.dummy.database import database as ATNT_DATABASE
 from bob.bio.video import VideoLikeContainer
 from bob.bio.video.database import VideoBioFile
 

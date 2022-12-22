@@ -7,8 +7,9 @@ parts
 .installed.cfg
 .mr.developer.cfg
 *.egg-info
-src
 develop-eggs
 sphinx
 dist
 record.txt
+.gitlab-ci-local*
+html/

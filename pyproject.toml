@@ -1,6 +1,87 @@
 [build-system]
-    requires = ["setuptools", "wheel", "bob.extension"]
+    requires = ["setuptools>=61.0.0", "wheel"]
     build-backend = "setuptools.build_meta"
+
+[project]
+    name = "bob.bio.video"
+    version = "6.1.2b0"
+    requires-python = ">=3.9"
+    description = "Run biometric recognition algorithms on videos"
+    dynamic = ["readme"]
+    license = {text = "BSD 3-Clause License"}
+    authors = [
+    {name = "The biometric person recognition group at Idiap, Switzerland"},
+    {email = "bob-devel@googlegroups.com"},
+    ]
+    keywords = ["bob"]
+
+    classifiers=[
+        "Framework :: Bob",
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: BSD License",
+        "Natural Language :: English",
+        "Programming Language :: Python",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    ]
+    dependencies = [
+        "setuptools",
+        "numpy",
+        "h5py",
+        "scikit-learn",
+        "exposed",
+        "bob.io.base",
+        "bob.bio.base",
+        "bob.bio.face",
+        "bob.pipelines",
+        "imageio",
+        "imageio-ffmpeg",
+    ]
+
+[project.urls]
+    documentation = "https://www.idiap.ch/software/bob/docs/bob/bob.bio.video/master/sphinx/"
+    homepage = "https://pypi.org/project/bob.bio.video/"
+    repository = "https://gitlab.idiap.ch/bob/bob.bio.video"
+    changelog = "https://gitlab.idiap.ch/bob/bob.bio.video/-/releases"
+
+[project.optional-dependencies]
+    qa = ["pre-commit"]
+    doc = [
+        "sphinx",
+        "sphinx_rtd_theme",
+        "sphinx-autodoc-typehints",
+        "auto-intersphinx",
+        "sphinxcontrib-programoutput",
+        "matplotlib",
+        "dask-ml",
+        "tensorflow",
+        ]
+    test = [
+        "pytest",
+        "pytest-cov",
+        "coverage",
+        "dask",
+        "tensorflow ; sys_platform == 'linux'",
+        "tensorflow-macos ; sys_platform != 'linux'",
+        ]
+
+[tool.setuptools]
+    zip-safe = false
+    package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+    readme = {file = "README.rst"}
+
+[project.entry-points."bob.bio.database"]
+    dummy-video       = "tests.dummy.database:database"  # for test purposes only
+    youtube             =" bob.bio.video.config.database.youtube:database"
+
+[project.entry-points."bob.bio.config"]
+    youtube           = "bob.bio.video.config.database.youtube"
+    video-wrapper     = "bob.bio.video.config.video_wrapper"
+
+[tool.distutils.bdist_wheel]
+    universal = true
 
 [tool.isort]
     profile = "black"
@@ -10,3 +91,15 @@
 
 [tool.black]
     line-length = 80
+
+[tool.coverage.run]
+    relative_files = true
+
+[tool.pytest.ini_options]
+    addopts = [
+        "--import-mode=append",
+        "--cov-report=term-missing",
+        "--cov=bob.bio.video",
+    ]
+    junit_logging = "all"
+    junit_log_passing_tests = false
