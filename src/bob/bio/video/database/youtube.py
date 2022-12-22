@@ -1,10 +1,12 @@
 import logging
 import os
 
+from exposed.rc import UserDefaults
+
 from bob.bio.base.database import CSVDatabase
-from bob.extension import rc
 
 logger = logging.getLogger(__name__)
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 class YoutubeDatabase(CSVDatabase):

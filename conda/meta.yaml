@@ -26,14 +26,14 @@ requirements:
     - scikit-learn {{ scikit_learn }}
     - imageio {{ imageio }}
     - imageio-ffmpeg {{ imageio_ffmpeg }}
-    - bob.extension
+    - exposed
     - bob.io.base
     - bob.bio.base
     - bob.bio.face
   run:
     - python
     - setuptools
-    - bob.extension
+    - exposed
     - bob.io.base
     - bob.bio.base
     - bob.bio.face

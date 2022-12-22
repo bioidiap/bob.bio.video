@@ -2,7 +2,6 @@ setuptools
 numpy
 h5py
 scikit-learn
-bob.extension
 bob.io.base
 imageio
 imageio-ffmpeg

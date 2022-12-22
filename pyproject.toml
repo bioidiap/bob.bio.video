@@ -29,7 +29,7 @@
         "numpy",
         "h5py",
         "scikit-learn",
-        "bob.extension",
+        "exposed",
         "bob.io.base",
         "bob.bio.base",
         "bob.bio.face",
