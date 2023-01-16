@@ -10,8 +10,7 @@
     dynamic = ["readme"]
     license = {text = "BSD 3-Clause License"}
     authors = [
-    {name = "The biometric person recognition group at Idiap, Switzerland"},
-    {email = "bob-devel@googlegroups.com"},
+    {name = "The biometric person recognition group at Idiap, Switzerland", email = "bob-devel@googlegroups.com"},
     ]
     keywords = ["bob"]
 
