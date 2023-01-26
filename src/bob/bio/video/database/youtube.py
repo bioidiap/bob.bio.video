@@ -6,7 +6,7 @@ from exposed.rc import UserDefaults
 from bob.bio.base.database import CSVDatabase
 
 logger = logging.getLogger(__name__)
-rc = UserDefaults("~/.bobrc", "BOBRC")
+rc = UserDefaults("~/.bobrc")
 
 
 class YoutubeDatabase(CSVDatabase):
