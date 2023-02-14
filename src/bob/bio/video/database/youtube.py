@@ -1,7 +1,7 @@
 import logging
 import os
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 
 from bob.bio.base.database import CSVDatabase
 
