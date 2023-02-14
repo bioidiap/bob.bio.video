@@ -84,7 +84,6 @@ class YoutubeDatabase(CSVDatabase):
         annotation_extension=".labeled_faces.txt",
         frame_selector=None,
     ):
-
         original_directory = original_directory or ""
         if not os.path.exists(original_directory):
             logger.warning(

@@ -8,6 +8,7 @@ from .utils import (  # noqa: F401
 from . import annotator  # noqa: F401
 from . import transformer  # noqa: F401
 
+
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
     """Says object was actually declared here, and not in the import module.

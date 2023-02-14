@@ -30,7 +30,6 @@ class FailSucessAnnotator(bob.bio.base.annotator.Annotator):
 
 
 def test_wrapper():
-
     original_path = pkg_resources.resource_filename(__name__, "")
     image_files = DummyBioFile(
         client_id=1,
@@ -77,7 +76,6 @@ def _get_test_video():
 
 
 def test_wrapper_normalize():
-
     video = _get_test_video()
 
     annotator = bob.bio.video.annotator.Wrapper("mtcnn", normalize=True)
@@ -89,7 +87,6 @@ def test_wrapper_normalize():
 
 
 def test_failsafe_video():
-
     video = _get_test_video()
 
     annotator = bob.bio.video.annotator.FailSafeVideo(

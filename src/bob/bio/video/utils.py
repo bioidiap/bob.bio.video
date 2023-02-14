@@ -24,7 +24,6 @@ def video_wrap_skpipeline(sk_pipeline):
     """
 
     for i, name, estimator in sk_pipeline._iter():
-
         # 1. Unwrap the estimator
         # If the estimator is `Sample` wrapped takes `estimator.estimator`.
         transformer = (
@@ -235,7 +234,6 @@ class VideoAsArray:
             # read the frames one by one and yield them
             real_frame_numbers = self.indices[index[0]]
             for i, frame in enumerate(self.reader):
-
                 frame = to_bob(frame)
                 if i not in real_frame_numbers:
                     continue
