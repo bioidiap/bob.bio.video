@@ -29,7 +29,6 @@ class VideoWrapper(TransformerMixin, BaseEstimator):
     def transform(self, videos, **kwargs):
         transformed_videos = []
         for i, video in enumerate(videos):
-
             if not hasattr(video, "indices"):
                 raise ValueError(
                     f"The input video: {video}\n does not have indices.\n "
