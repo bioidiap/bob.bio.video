@@ -47,7 +47,7 @@ class DummyDatabase(ZTBioDatabase):
         protocol=None,
         purposes=None,
         model_ids=None,
-        **kwargs
+        **kwargs,
     ):
         return self._make_bio(
             self._db.objects(model_ids, groups, purposes, protocol, **kwargs)
