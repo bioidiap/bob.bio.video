@@ -6,7 +6,7 @@ from clapp.rc import UserDefaults
 from bob.bio.base.database import CSVDatabase
 
 logger = logging.getLogger(__name__)
-rc = UserDefaults("~/.bobrc")
+rc = UserDefaults("bobrc.toml")
 
 
 class YoutubeDatabase(CSVDatabase):
