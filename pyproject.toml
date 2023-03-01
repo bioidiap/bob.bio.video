@@ -28,7 +28,7 @@
         "numpy",
         "h5py",
         "scikit-learn",
-        "clapp",
+        "clapper",
         "bob.io.base",
         "bob.bio.base",
         "bob.bio.face",
