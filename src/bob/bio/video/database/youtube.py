@@ -1,7 +1,7 @@
 import logging
 import os
 
-from clapp.rc import UserDefaults
+from clapper.rc import UserDefaults
 
 from bob.bio.base.database import CSVDatabase
 

@@ -26,14 +26,14 @@ requirements:
     - scikit-learn {{ scikit_learn }}
     - imageio {{ imageio }}
     - imageio-ffmpeg {{ imageio_ffmpeg }}
-    - clapp
+    - clapper
     - bob.io.base
     - bob.bio.base
     - bob.bio.face
   run:
     - python
     - setuptools
-    - clapp
+    - clapper
     - bob.io.base
     - bob.bio.base
     - bob.bio.face
