@@ -69,7 +69,7 @@
     package-dir = {"" = "src"}
 
 [tool.setuptools.dynamic]
-    readme = {file = "README.rst"}
+    readme = {file = "README.md", content-type = "text/markdown"}
 
 [project.entry-points."bob.bio.database"]
     dummy-video       = "tests.dummy.database:database"  # for test purposes only
