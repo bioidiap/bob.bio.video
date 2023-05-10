@@ -14,7 +14,7 @@ provides the basic scripts.
 In this package, wrapper classes are provide, which allow to run traditional
 image-based face recognition algorithms on video data.
 
-# Installation
+## Installation
 
 Complete Bob's
 [installation instructions](https://www.idiap.ch/software/bob/install). Then,
@@ -24,7 +24,7 @@ to install this package, run:
 conda install bob.bio.video
 ```
 
-# Contact
+## Contact
 
 For questions or reporting issues to this software package, contact our
 development [mailing list](https://www.idiap.ch/software/bob/discuss).
