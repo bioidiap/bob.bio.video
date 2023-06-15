@@ -24,17 +24,17 @@
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ]
     dependencies = [
-        "setuptools",
-        "numpy",
-        "h5py",
-        "scikit-learn",
-        "clapper",
+        "bob",
         "bob.io.base",
+        "bob.pipelines",
         "bob.bio.base",
         "bob.bio.face",
-        "bob.pipelines",
+        "clapper",
+        "h5py",
         "imageio",
         "imageio-ffmpeg",
+        "numpy",
+        "scikit-learn",
     ]
 
 [project.urls]
